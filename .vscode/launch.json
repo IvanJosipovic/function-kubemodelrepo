@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Function.DA.ETL/bin/Debug/net9.0/Function.DA.ETL.dll",
+            "program": "${workspaceFolder}/src/Function/bin/Debug/net9.0/Function.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
