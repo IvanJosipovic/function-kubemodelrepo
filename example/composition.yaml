@@ -1,0 +1,13 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: composition
+spec:
+  compositeTypeRef:
+    apiVersion: svc.systems/v1alpha1
+    kind: KubeModelRepo
+  mode: Pipeline
+  pipeline:
+  - step: run-the-function
+    functionRef:
+      name: function-kubemodelrepo

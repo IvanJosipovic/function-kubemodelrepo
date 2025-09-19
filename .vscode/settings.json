@@ -1,0 +1,4 @@
+{
+    "dotnet.defaultSolution": "Function.DA.ETL.sln",
+    "dotnet.testWindow.useTestingPlatformProtocol": true
+}

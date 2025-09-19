@@ -1,0 +1,71 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "enabled": true,
+  "timezone": "America/Vancouver",
+  "dependencyDashboard": true,
+  "semanticCommits": "enabled",
+  "extends": [
+    "config:recommended"
+  ],
+  "platformAutomerge": true,
+  "ignorePaths": [
+    "**/docs/**"
+  ],
+  "packageRules": [
+    {
+      "groupName": "KubernetesCRDModelGen",
+      "separateMajorMinor": true,
+      "groupSlug": "kube-crd-model-gen",
+      "matchPackageNames": [
+        "/KubernetesCRDModelGen/",
+        "/KubernetesCRDModelGen.*/"
+      ]
+    },
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "automerge": true,
+      "matchFileNames": [
+        "tests/**",
+        "benchmarks/**"
+      ]
+    },
+    {
+      "matchUpdateTypes": [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      "automerge": false,
+      "semanticCommitType": "fix",
+      "matchFileNames": [
+        "src/**",
+        "global.json"
+      ]
+    },
+    {
+      "automerge": true,
+      "groupName": "Dockerfile Dependencies",
+      "groupSlug": "dockerfile-dependencies",
+      "semanticCommitType": "fix",
+      "matchPackageNames": [
+        "alpine_*"
+      ]
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\sENV .*?_VERSION=\"(?<currentValue>.*)\"\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    }
+  ]
+}

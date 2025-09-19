@@ -1,0 +1,12 @@
+apiVersion: meta.pkg.crossplane.io/v1
+kind: Function
+metadata:
+  name: function-github
+  annotations:
+    meta.crossplane.io/maintainer: Ivan Josipovic
+    meta.crossplane.io/source: github.com/
+    meta.crossplane.io/description: |
+
+spec:
+  capabilities:
+  - composition
