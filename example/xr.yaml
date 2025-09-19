@@ -1,0 +1,160 @@
+apiVersion: svc.systems/v1alpha1
+kind: KubeModelRepo
+metadata:
+  name: main
+spec:
+  repos:
+  - group: databricks.upbound.io
+    oci:
+      image: xpkg.upbound.io/upbound/provider-databricks
+      Semver: ">=0.1.0"
+  - group: azure.com
+    gitHub:
+      repo: https://api.github.com/repos/Azure/azure-service-operator/releases
+      assetfilter: azureserviceoperator_customresourcedefinitions_
+  - group: knative.dev
+    gitHub:
+      repo: https://api.github.com/repos/knative/serving/releases
+      assetfilter: serving-crds.yaml
+  - group: knative.dev
+    gitHub:
+      repo: https://api.github.com/repos/knative/eventing/releases
+      assetfilter: eventing-crds.yaml
+  - group: kubevirt.io
+    gitHub:
+      repo: https://api.github.com/repos/kubevirt/kubevirt/releases
+      assetfilter: kubevirt-operator.yaml
+  - group: argoproj.io
+    helm:
+      repo: https://argoproj.github.io/argo-helm
+      chart: argo-cd
+      cmd: "--set extensions.enabled=true"
+  - group: argoproj.io
+    helm:
+      repo: https://argoproj.github.io/argo-helm
+      chart: argo-events
+  - group: argoproj.io
+    helm:
+      repo: https://argoproj.github.io/argo-helm
+      chart: argo-rollouts
+  - group: argoproj.io
+    helm:
+      repo: https://argoproj.github.io/argo-helm
+      chart: argo-workflows
+  - group: istio.io
+    helm:
+      repo: https://istio-release.storage.googleapis.com/charts
+      chart: base
+  - group: jetstack.io
+    helm:
+      repo: https://charts.jetstack.io
+      chart: cert-manager
+      cmd: "--set installCRDs=true"
+  - group: keda.sh
+    helm:
+      repo: https://kedacore.github.io/charts
+      chart: keda
+  - group: secrets-store.csi.x-k8s.io
+    helm:
+      repo: https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+      chart: secrets-store-csi-driver
+  - group: traefik.io
+    helm:
+      repo: https://traefik.github.io/charts
+      chart: traefik
+  - group: postgresql.cnpg.io
+    helm:
+      repo: https://cloudnative-pg.github.io/charts
+      chart: cloudnative-pg
+  - group: aquasecurity.github.io
+    helm:
+      repo: https://aquasecurity.github.io/helm-charts/
+      chart: trivy-operator
+  - group: projectcalico.org
+    directUrl:
+      urls:
+      - https://raw.githubusercontent.com/projectcalico/calico/master/manifests/crds.yaml
+  - group: fluxcd.io
+    directUrl:
+      urls:
+      - https://github.com/fluxcd/flux2/releases/latest/download/manifests.tar.gz
+  - group: azure.upbound.io
+    directUrl:
+      urls:
+      - https://github.com/crossplane-contrib/provider-upjet-azure/archive/refs/heads/main.zip
+      filter: provider-upjet-azure-main/package/crds/
+  - group: azuread.upbound.io
+    directUrl:
+      urls:
+      - https://github.com/crossplane-contrib/provider-upjet-azuread/archive/refs/heads/main.zip
+      filter: provider-upjet-azuread-main/package/crds/
+  - group: aws.upbound.io
+    directUrl:
+      urls:
+      - https://github.com/crossplane-contrib/provider-upjet-aws/archive/refs/heads/main.zip
+    filter: provider-upjet-aws-main/package/crds/
+  - group: databricks.crossplane.io
+    directUrl:
+      urls:
+      - https://github.com/glalanne/provider-databricks/archive/refs/heads/main.zip
+    filter: provider-databricks-main/package/crds/
+  - group: gcp.upbound.io
+    directUrl:
+      urls:
+      - https://github.com/crossplane-contrib/provider-upjet-gcp/archive/refs/heads/main.zip
+      filter: provider-upjet-gcp-main/package/crds/
+  - group: cnrm.cloud.google.com
+    directUrl:
+      urls:
+      - https://github.com/GoogleCloudPlatform/k8s-config-connector/archive/refs/heads/master.zip
+      filter: k8s-config-connector-master/crds/
+  - group: tf.upbound.io
+    directUrl:
+      urls:
+      - https://github.com/crossplane-contrib/provider-terraform/archive/refs/heads/main.zip
+      filter: provider-terraform-main/package/crds/
+  - group: helm.crossplane.io
+    directUrl:
+      urls:
+      - https://github.com/crossplane-contrib/provider-helm/archive/refs/heads/main.zip
+      filter: provider-helm-main/package/crds/
+  - group: kubernetes.crossplane.io
+    directUrl:
+      urls:
+      - https://github.com/crossplane-contrib/provider-kubernetes/archive/refs/heads/main.zip
+      filter: provider-kubernetes-main/package/crds/
+  - group: azapi.upbound.io
+    directUrl:
+      urls:
+      - https://github.com/upbound/provider-upjet-azapi/archive/refs/heads/main.zip
+      filter: provider-upjet-azapi-main/package/crds/
+  - group: opentofu.upbound.io
+    directUrl:
+      urls:
+      - https://github.com/upbound/provider-opentofu/archive/refs/heads/main.zip
+      filter: provider-opentofu-main/package/crds/
+  - group: upbound.io
+    directUrl:
+      urls:
+      - https://github.com/upbound/provider-upbound/archive/refs/heads/main.zip
+      filter: provider-upbound-main/package/crds/
+  - group: vault.upbound.io
+    directUrl:
+      urls:
+      - https://github.com/upbound/provider-vault/archive/refs/heads/main.zip
+    filter: provider-vault-main/package/crds/
+  - group: crossplane.io
+    directUrl:
+      urls:
+      - https://github.com/crossplane/crossplane/archive/refs/heads/main.zip
+      filter: crossplane-main/cluster/crds/
+  - group: storage.k8s.io
+    directUrl:
+      urls:
+      - https://github.com/kubernetes-csi/external-snapshotter/archive/refs/heads/master.zip
+      filter: external-snapshotter-master/client/config/crd/
+  - group: gateway.networking.k8s.io
+    directUrl:
+      urls:
+      - https://github.com/kubernetes-sigs/gateway-api/archive/refs/heads/main.zip
+      filter: gateway-api-main/config/crd/standard/

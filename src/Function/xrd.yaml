@@ -1,0 +1,84 @@
+# yaml-language-server: $schema=xrd.schema.json
+apiVersion: apiextensions.crossplane.io/v2
+kind: CompositeResourceDefinition
+metadata:
+  name: kubemodelrepos.svc.systems
+spec:
+  scope: Namespaced
+  group: svc.systems
+  names:
+    categories:
+    - crossplane
+    kind: KubeModelRepo
+    plural: kubemodelrepos
+  versions:
+  - name: v1alpha1
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              repos:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    group:
+                      type: string
+                    directUrl:
+                      type: object
+                      properties:
+                        url:
+                          type: array
+                          items:
+                            type: string
+                        filter:
+                          type: string
+                      required:
+                      - url
+                    gitHub:
+                      type: object
+                      properties:
+                        repo:
+                          type: string
+                        assetfilter:
+                          type: string
+                        semVer:
+                          type: string
+                      required:
+                      - repo
+                    helm:
+                      type: object
+                      properties:
+                        chart:
+                          type: string
+                        cmd:
+                          type: string
+                        repo:
+                          type: string
+                        preRelease:
+                          type: boolean
+                      required:
+                      - chart
+                      - repo
+                    oci:
+                      type: object
+                      properties:
+                        image:
+                          type: string
+                        semVer:
+                          type: string
+                        tag:
+                          type: string
+                      required:
+                      - image
+                  required:
+                  - group
+            type: object
+            required:
+            - repos
+        required:
+        - spec
+        type: object
+    served: true
