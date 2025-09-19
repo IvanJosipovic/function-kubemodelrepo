@@ -43,6 +43,20 @@ jobs:
     - name: .NET Test
       run: dotnet test -- --report-xunit-trx --report-xunit-trx-filename test-results.trx --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
 
+    - name: Coverage
+      uses: codecov/codecov-action@v5
+      with:
+        files: coverage.cobertura.xml
+        fail_ci_if_error: true
+
+    - name: Test Report
+      uses: dorny/test-reporter@v2
+      if: success() || failure()
+      with:
+        name: Tests
+        path: '**/TestResults/test-results.trx'
+        reporter: dotnet-trx
+
     - name: Docker Buildx
       run: docker buildx build --platform linux/amd64,linux/arm64 -t test.loc/function-test --build-arg VERSION=${{ (steps.semantic.outputs.new_release_published && steps.semantic.outputs.new_release_version) || '0.0.1' }}  src/Function
 
