@@ -1,7 +1,7 @@
 apiVersion: pkg.crossplane.io/v1
 kind: Function
 metadata:
-  name: function
+  name: function-kubemodelrepo
   annotations:
     # 'Docker' connects to Docker Engine. It uses Docker to pull and run a function runtime.
     # 'Development' connects to a function runtime you have run manually.

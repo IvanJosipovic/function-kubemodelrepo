@@ -1,8 +1,5 @@
 # FUNCTION
 
-
-[CI/CD Pipeline](https://dev.azure.com/GalileoDigital/DA%20-%20Core%20Technology/_build?definitionId=2124)
-
 ## How to Test
 
 You can run your function locally and test it using `crossplane render`
@@ -19,8 +16,8 @@ dotnet debug
 
 ## Run Function In Docker
 ```shell
-docker build -t function-github src/Function
-docker run -it -p 9443:9443 function-github
+docker build -t function-kubemodelrepo src/Function
+docker run -it -p 9443:9443 function-kubemodelrepo
 ```
 
 ## Run Test
