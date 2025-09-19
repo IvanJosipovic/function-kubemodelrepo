@@ -43,15 +43,6 @@ jobs:
     - name: .NET Test
       run: dotnet test -- --report-xunit-trx --report-xunit-trx-filename test-results.trx --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
 
-    - name: .NET Pack
-      run: dotnet pack -c Release -p:Version=${{ (steps.semantic.outputs.new_release_published && steps.semantic.outputs.new_release_version) || '0.0.1' }}
-
-    - name: Upload NuGet Packages
-      uses: actions/upload-artifact@v4
-      with:
-        name: NuGet Package
-        path: src/**/*.nupkg
-
     - name: Docker Buildx
       run: docker buildx build --platform linux/amd64,linux/arm64 -t test.loc/function-test --build-arg VERSION=${{ (steps.semantic.outputs.new_release_published && steps.semantic.outputs.new_release_version) || '0.0.1' }} -f src/Function/Dockerfile
 
