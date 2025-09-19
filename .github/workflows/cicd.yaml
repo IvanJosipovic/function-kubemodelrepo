@@ -44,10 +44,10 @@ jobs:
       run: dotnet test -- --report-xunit-trx --report-xunit-trx-filename test-results.trx --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
 
     - name: Docker Buildx
-      run: docker buildx build --platform linux/amd64,linux/arm64 -t test.loc/function-test --build-arg VERSION=${{ (steps.semantic.outputs.new_release_published && steps.semantic.outputs.new_release_version) || '0.0.1' }} -f src/Function/Dockerfile
+      run: docker buildx build --platform linux/amd64,linux/arm64 -t test.loc/function-test --build-arg VERSION=${{ (steps.semantic.outputs.new_release_published && steps.semantic.outputs.new_release_version) || '0.0.1' }}  src/Function
 
     - name: Load Docker Image
-      run: docker buildx build --load --platform $(docker info --format '{{.Architecture}}') -t test.loc/function-test -f src/Function/Dockerfile
+      run: docker buildx build --load --platform $(docker info --format '{{.Architecture}}') -t test.loc/function-test src/Function
 
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
