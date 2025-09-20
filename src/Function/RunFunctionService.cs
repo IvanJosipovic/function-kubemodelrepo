@@ -224,12 +224,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 {
                     Spec = new()
                     {
-                        ManagementPolicies =
-                        [
-                            V1alpha2RequestSpecManagementPoliciesEnum.Observe,
-                            V1alpha2RequestSpecManagementPoliciesEnum.Create,
-                            V1alpha2RequestSpecManagementPoliciesEnum.Update,
-                        ],
                         ForProvider = new()
                         {
                             Headers = new Dictionary<string, IList<string>>()
