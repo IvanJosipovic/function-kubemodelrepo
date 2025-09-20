@@ -187,7 +187,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 if (requiredSecret != null && requiredSecret.Items != null)
                 {
-                    foreach (var secret in requiredSecret.Items)
+                    foreach (var secret in requiredSecret.Items.Where(x => x.Data != null))
                     {
                         foreach (var data in secret.Data)
                         {
