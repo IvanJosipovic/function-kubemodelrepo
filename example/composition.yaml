@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: composition
+  name: kubemodelrepo
 spec:
   compositeTypeRef:
     apiVersion: svc.systems/v1alpha1
