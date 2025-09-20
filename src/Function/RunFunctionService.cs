@@ -201,7 +201,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 }
             }
 
-            // Get Desired resources and update Status if Ready
+            // Get Desired resources and update Status if  Ready
             resp.UpdateDesiredReadyStatus(request, logger);
 
             return Task.FromResult(resp);
