@@ -174,7 +174,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 var requiredSecret = request.GetRequiredResource<V1Secret>("secret");
 
-                if (requiredSecret != null)
+                if (requiredSecret != null && requiredSecret.Data != null)
                 {
                     foreach (var item in requiredSecret.Data)
                     {
