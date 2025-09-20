@@ -151,7 +151,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 var content = JsonSerializer.Serialize(new
                 {
                     Config = group.Select(x => x)
-                }, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.Always });
+                }, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
 
                 var file = new V1alpha1RepositoryFile()
                 {
@@ -217,10 +217,15 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 }
 
                 //https://docs.github.com/en/rest/actions/permissions?apiVersion=2022-11-28#get-default-workflow-permissions-for-a-repository
-                var secretSettings = new V1alpha1Request()
+                var secretSettings = new V1alpha2Request()
                 {
                     Spec = new()
                     {
+                        ManagementPolicies =
+                        [
+                            V1alpha2RequestSpecManagementPoliciesEnum.Observe,
+                            V1alpha2RequestSpecManagementPoliciesEnum.Update,
+                        ],
                         ForProvider = new()
                         {
                             Headers = new Dictionary<string, IList<string>>()
@@ -244,11 +249,13 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             [
                                 new()
                                 {
-                                    Method = V1alpha1RequestSpecForProviderMappingsMethodEnum.GET,
+                                    Action = V1alpha2RequestSpecForProviderMappingsActionEnum.OBSERVE,
+                                    Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.GET,
                                 },
                                 new()
                                 {
-                                    Method = V1alpha1RequestSpecForProviderMappingsMethodEnum.PUT,
+                                    Action = V1alpha2RequestSpecForProviderMappingsActionEnum.UPDATE,
+                                    Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
                                 }
                             ]
                         }
