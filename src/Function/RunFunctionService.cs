@@ -146,10 +146,10 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     {
                         ManagementPolicies = [
                             V1alpha1RepositoryFileSpecManagementPoliciesEnum.Observe,
-                                V1alpha1RepositoryFileSpecManagementPoliciesEnum.Create,
-                                V1alpha1RepositoryFileSpecManagementPoliciesEnum.Update,
-                                V1alpha1RepositoryFileSpecManagementPoliciesEnum.LateInitialize,
-                            ],
+                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Create,
+                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Update,
+                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.LateInitialize,
+                        ],
                         ForProvider = new()
                         {
                             Branch = "main",
@@ -168,7 +168,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 {
                     ApiVersion = V1Secret.KubeApiVersion,
                     Kind = V1Secret.KubeApiVersion,
-                    MatchName = observedXR.Spec.Credentials.SecertName,
+                    MatchName = observedXR.Spec.Credentials.SecretName,
                     Namespace = observedXR.Spec.Credentials.SecretNamespace
                 });
 
@@ -201,7 +201,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 }
             }
 
-            // Get Desired resources and update Status if  Ready
+            // Get Desired resources and update Status if Ready
             resp.UpdateDesiredReadyStatus(request, logger);
 
             return Task.FromResult(resp);

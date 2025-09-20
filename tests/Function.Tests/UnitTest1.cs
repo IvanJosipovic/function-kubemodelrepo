@@ -21,7 +21,7 @@ public class UnitTest1
             {
                 Credentials = new()
                 {
-                    SecertName = "test",
+                    SecretName = "test",
                     SecretNamespace = "default"
                 },
                 Repos =

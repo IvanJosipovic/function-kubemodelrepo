@@ -22,7 +22,7 @@ spec:
               credentials:
                 type: object
                 properties:
-                  secertName:
+                  secretName:
                     type: string
                   secretNamespace:
                     type: string
