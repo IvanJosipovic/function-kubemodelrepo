@@ -1,17 +1,17 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Apiextensions.Fn.Proto.V1;
 using EnumsNET;
-using Function.SDK.CSharp;
 using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
+using Function.SDK.CSharp;
 using Google.Protobuf;
 using Grpc.Core;
-using k8s;
 using k8s.Models;
+using k8s;
 using KubernetesCRDModelGen.Models.actions.github.upbound.io;
 using KubernetesCRDModelGen.Models.http.crossplane.io;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Function;
 
@@ -229,8 +229,8 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             Headers = new Dictionary<string, IList<string>>()
                             {
                                 { "Accept", ["application/vnd.github+json"] },
-                                { "Authorization", [$$$"""Bearer  {{ {{{observedXR.Spec.Credentials.SecretName}}}:{{{observedXR.Spec.Credentials.SecretNamespace}}}:GHPAT }}"""] },
-                                { "X-GitHub-Api-Version", ["2022-11-28"] }
+                                { "Authorization", [$$$"""Bearer {{ {{{observedXR.Spec.Credentials.SecretName}}}:{{{observedXR.Spec.Credentials.SecretNamespace}}}:GHPAT }}"""] },
+                                //{ "X-GitHub-Api-Version", ["2022-11-28"] }
                             },
                             Payload = new()
                             {
@@ -263,7 +263,8 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                     Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
                                     Url = "(.payload.baseUrl)"
                                 }
-                            ]
+                            ],
+                            WaitTimeout = "1m"
                         }
                     }
                 };
