@@ -29,14 +29,14 @@ spec:
                     directUrl:
                       type: object
                       properties:
-                        url:
+                        urls:
                           type: array
                           items:
                             type: string
                         filter:
                           type: string
                       required:
-                      - url
+                      - urls
                     gitHub:
                       type: object
                       properties:
