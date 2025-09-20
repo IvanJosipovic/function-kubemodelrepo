@@ -1,13 +1,15 @@
+using System.Text.Json;
 using Apiextensions.Fn.Proto.V1;
 using EnumsNET;
-using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
 using Function.SDK.CSharp;
+using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
+using Google.Protobuf;
 using Grpc.Core;
+using k8s;
 using k8s.Models;
+using KubernetesCRDModelGen.Models.actions.github.upbound.io;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
-using System.Text.Json;
-using KubernetesCRDModelGen.Models.actions.github.upbound.io;
 
 namespace Function;
 
@@ -82,7 +84,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.Desired.AddOrUpdate("repo-" + group.Key, repo);
 
-                var policy = new V1alpha1RepositoryRuleset()
+                var ruleset = new V1alpha1RepositoryRuleset()
                 {
                     Spec = new()
                     {
@@ -140,7 +142,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     }
                 };
 
-                resp.Desired.AddOrUpdate("policy-" + group.Key, policy);
+                resp.Desired.AddOrUpdate("ruleset-" + group.Key, ruleset);
 
                 var existingFile = request.GetObservedResource<V1alpha1RepositoryFile?>("file-" + group.Key);
 
@@ -183,29 +185,32 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 var requiredSecret = request.GetRequiredResource<V1Secret>("secret");
 
-                if (requiredSecret != null && requiredSecret.Data != null)
+                if (requiredSecret != null && requiredSecret.Items != null)
                 {
-                    foreach (var item in requiredSecret.Data)
+                    foreach (var secret in requiredSecret.Items)
                     {
-                        var secret = new V1alpha1ActionsSecret()
+                        foreach (var data in secret.Data)
                         {
-                            Spec = new()
+                            var secretObj = new V1alpha1ActionsSecret()
                             {
-                                ForProvider = new()
+                                Spec = new()
                                 {
-                                    SecretName = item.Key,
-                                    PlaintextValueSecretRef = new()
+                                    ForProvider = new()
                                     {
-                                        Name = observedXR.Spec.Credentials.SecretNamespace,
-                                        Key = item.Key,
-                                        Namespace = observedXR.Spec.Credentials.SecretNamespace
-                                    },
-                                    Repository = repo.Spec.ForProvider.Name,
+                                        SecretName = data.Key,
+                                        PlaintextValueSecretRef = new()
+                                        {
+                                            Name = observedXR.Spec.Credentials.SecretNamespace,
+                                            Key = data.Key,
+                                            Namespace = observedXR.Spec.Credentials.SecretNamespace
+                                        },
+                                        Repository = repo.Spec.ForProvider.Name,
+                                    }
                                 }
-                            }
-                        };
+                            };
 
-                        resp.Desired.AddOrUpdate("secret-" + secret.Spec.ForProvider.SecretName, secret);
+                            resp.Desired.AddOrUpdate("secret-" + secretObj.Spec.ForProvider.SecretName, secretObj);
+                        }
                     }
                 }
             }
@@ -215,5 +220,26 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
             return Task.FromResult(resp);
         }
+    }
+}
+
+public static class Extensions
+{
+    /// <summary>
+    /// Get a Required Resource from the supplied request.
+    /// </summary>
+    /// <param name="request">The RunFunctionRequest.</param>
+    /// <param name="key">The Resource Key</param>
+    /// <returns>A Required resource</returns>
+    public static IItems<T>? GetRequiredResource<T>(this RunFunctionRequest request, string key)
+    {
+        if (request.RequiredResources.TryGetValue(key, out var resource))
+        {
+            var json = JsonFormatter.Default.Format(resource);
+
+            return KubernetesJson.Deserialize<IItems<T>>(json);
+        }
+
+        return default;
     }
 }

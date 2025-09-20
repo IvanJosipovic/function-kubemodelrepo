@@ -3,7 +3,7 @@ using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
 using Shouldly;
 
-namespace Function.DA.ETL.Tests;
+namespace Function.Tests;
 
 public class UnitTest1
 {

@@ -8,7 +8,7 @@ using Grpc.Core.Utils;
 using k8s;
 using Microsoft.Extensions.Logging;
 
-namespace Function.DA.ETL.Tests;
+namespace Function.Tests;
 
 public static class TestExtensions
 {
