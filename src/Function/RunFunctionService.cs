@@ -167,7 +167,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 resp.Requirements.Resources.Add("secret", new ResourceSelector()
                 {
                     ApiVersion = V1Secret.KubeApiVersion,
-                    Kind = V1Secret.KubeApiVersion,
+                    Kind = V1Secret.KubeKind,
                     MatchName = observedXR.Spec.Credentials.SecretName,
                     Namespace = observedXR.Spec.Credentials.SecretNamespace
                 });
