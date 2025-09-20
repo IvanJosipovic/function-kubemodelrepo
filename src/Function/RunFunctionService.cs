@@ -224,6 +224,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                         ManagementPolicies =
                         [
                             V1alpha2RequestSpecManagementPoliciesEnum.Observe,
+                            V1alpha2RequestSpecManagementPoliciesEnum.Create,
                             V1alpha2RequestSpecManagementPoliciesEnum.Update,
                         ],
                         ForProvider = new()
@@ -251,6 +252,11 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                 {
                                     Action = V1alpha2RequestSpecForProviderMappingsActionEnum.OBSERVE,
                                     Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.GET,
+                                },
+                                new()
+                                {
+                                    Action = V1alpha2RequestSpecForProviderMappingsActionEnum.CREATE,
+                                    Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
                                 },
                                 new()
                                 {
