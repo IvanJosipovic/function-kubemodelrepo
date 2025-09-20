@@ -185,9 +185,9 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 var requiredSecret = request.GetRequiredResource<V1Secret>("secret");
 
-                if (requiredSecret != null && requiredSecret.Items != null)
+                if (requiredSecret != null)
                 {
-                    foreach (var secret in requiredSecret.Items.Where(x => x.Data != null))
+                    foreach (var secret in requiredSecret.Where(x => x.Data != null))
                     {
                         foreach (var data in secret.Data)
                         {
@@ -231,13 +231,22 @@ public static class Extensions
     /// <param name="request">The RunFunctionRequest.</param>
     /// <param name="key">The Resource Key</param>
     /// <returns>A Required resource</returns>
-    public static KubernetesList<T>? GetRequiredResource<T>(this RunFunctionRequest request, string key) where T : IKubernetesObject
+    public static List<T>? GetRequiredResource<T>(this RunFunctionRequest request, string key) where T : IKubernetesObject
     {
         if (request.RequiredResources.TryGetValue(key, out var resource))
         {
-            var json = JsonFormatter.Default.Format(resource);
+            var list = new List<T>();
 
-            return KubernetesJson.Deserialize<KubernetesList<T>>(json);
+            foreach (var item in resource.Items)
+            {
+                var json = JsonFormatter.Default.Format(item.Resource_);
+
+                var obj =  KubernetesJson.Deserialize<T>(json);
+
+                list.Add(obj);
+            }
+
+            return list;
         }
 
         return default;
