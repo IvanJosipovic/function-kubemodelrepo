@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Function.SDK.CSharp" Version="1.0.0-alpha.34" />
-    <PackageReference Include="Function.SDK.CSharp.SourceGenerator" Version="1.0.0-alpha.34" />
+    <PackageReference Include="Function.SDK.CSharp" Version="1.0.0-alpha.35" />
+    <PackageReference Include="Function.SDK.CSharp.SourceGenerator" Version="1.0.0-alpha.35" />
     <PackageReference Include="KubernetesCRDModelGen.Models.crossplane.io" Version="1.0.0-alpha.612" />
     <PackageReference Include="KubernetesCRDModelGen.Models.github.upbound.io" Version="1.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />

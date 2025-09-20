@@ -200,7 +200,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                         SecretName = data.Key,
                                         PlaintextValueSecretRef = new()
                                         {
-                                            Name = observedXR.Spec.Credentials.SecretNamespace,
+                                            Name = observedXR.Spec.Credentials.SecretName,
                                             Key = data.Key,
                                             Namespace = observedXR.Spec.Credentials.SecretNamespace
                                         },
@@ -220,35 +220,5 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
             return Task.FromResult(resp);
         }
-    }
-}
-
-public static class Extensions
-{
-    /// <summary>
-    /// Get a Required Resource from the supplied request.
-    /// </summary>
-    /// <param name="request">The RunFunctionRequest.</param>
-    /// <param name="key">The Resource Key</param>
-    /// <returns>A Required resource</returns>
-    public static List<T>? GetRequiredResource<T>(this RunFunctionRequest request, string key) where T : IKubernetesObject
-    {
-        if (request.RequiredResources.TryGetValue(key, out var resource))
-        {
-            var list = new List<T>();
-
-            foreach (var item in resource.Items)
-            {
-                var json = JsonFormatter.Default.Format(item.Resource_);
-
-                var obj =  KubernetesJson.Deserialize<T>(json);
-
-                list.Add(obj);
-            }
-
-            return list;
-        }
-
-        return default;
     }
 }
