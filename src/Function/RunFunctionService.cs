@@ -92,6 +92,13 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 {
                     Spec = new()
                     {
+                        ManagementPolicies =
+                        [
+                            V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.Create,
+                            V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.Observe,
+                            V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.Update,
+                            V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.LateInitialize
+                        ],
                         ForProvider = new()
                         {
                             BypassActors =
@@ -199,6 +206,13 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             {
                                 Spec = new()
                                 {
+                                    ManagementPolicies =
+                                    [
+                                        V1alpha1ActionsSecretSpecManagementPoliciesEnum.Observe,
+                                        V1alpha1ActionsSecretSpecManagementPoliciesEnum.Create,
+                                        V1alpha1ActionsSecretSpecManagementPoliciesEnum.Update,
+                                        V1alpha1ActionsSecretSpecManagementPoliciesEnum.LateInitialize
+                                    ],
                                     ForProvider = new()
                                     {
                                         SecretName = data.Key,
@@ -224,6 +238,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 {
                     Spec = new()
                     {
+                        DeletionPolicy = V1alpha2RequestSpecDeletionPolicyEnum.Orphan,
                         ForProvider = new()
                         {
                             Headers = new Dictionary<string, IList<string>>()
