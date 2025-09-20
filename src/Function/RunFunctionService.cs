@@ -231,13 +231,13 @@ public static class Extensions
     /// <param name="request">The RunFunctionRequest.</param>
     /// <param name="key">The Resource Key</param>
     /// <returns>A Required resource</returns>
-    public static IItems<T>? GetRequiredResource<T>(this RunFunctionRequest request, string key)
+    public static KubernetesList<T>? GetRequiredResource<T>(this RunFunctionRequest request, string key) where T : IKubernetesObject
     {
         if (request.RequiredResources.TryGetValue(key, out var resource))
         {
             var json = JsonFormatter.Default.Format(resource);
 
-            return KubernetesJson.Deserialize<IItems<T>>(json);
+            return KubernetesJson.Deserialize<KubernetesList<T>>(json);
         }
 
         return default;
