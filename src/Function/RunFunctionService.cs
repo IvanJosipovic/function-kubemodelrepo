@@ -16,6 +16,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
     public override Task<RunFunctionResponse> RunFunction(RunFunctionRequest request, ServerCallContext context)
     {
         var resp = request.To();
+        resp.Requirements = new();
 
         var observedXR = request.GetObservedCompositeResource<V1alpha1KubeModelRepo>();
 

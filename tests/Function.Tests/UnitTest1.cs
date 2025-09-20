@@ -19,6 +19,11 @@ public class UnitTest1
             },
             Spec = new()
             {
+                Credentials = new()
+                {
+                    SecertName = "test",
+                    SecretNamespace = "default"
+                },
                 Repos =
                 [
                     new()
