@@ -6,6 +6,7 @@ using Grpc.Core;
 using k8s.Models;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
+using System.Text.Json;
 
 namespace Function;
 
@@ -81,7 +82,8 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                 new()
                                 {
                                     ActorType = "OrganizationAdmin",
-                                    ActorId = 1
+                                    ActorId = 1,
+                                    BypassMode = "always"
                                 }
                             ],
                             Enforcement = "active",
@@ -133,7 +135,10 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                         ForProvider = new()
                         {
                             Branch = "main",
-                            Content = "test",
+                            Content = JsonSerializer.Serialize(new
+                            {
+                                Config = group.Select(x => x)
+                            }),
                             File = "appsettings.json",
                             OverwriteOnCreate = true,
                             Repository = repo.Spec.ForProvider.Name,
@@ -142,7 +147,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 };
 
                 resp.Desired.AddOrUpdate((string)("file-" + group.Key), file);
-
             }
 
             // Get Desired resources and update Status if Ready
