@@ -94,6 +94,15 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             [
                                 new()
                                 {
+                                    BranchNamePattern =
+                                    [
+                                        new()
+                                        {
+                                            Name = "main",
+                                            Pattern = "main",
+                                            Operator = "regex"
+                                        }
+                                    ],
                                     PullRequest =
                                     [
                                         new()
