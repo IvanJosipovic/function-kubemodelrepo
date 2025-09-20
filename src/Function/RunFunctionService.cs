@@ -1,11 +1,11 @@
 using Apiextensions.Fn.Proto.V1;
 using EnumsNET;
-using Function.SDK.CSharp;
 using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
+using Function.SDK.CSharp;
 using Grpc.Core;
 using k8s.Models;
-using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
+using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
 
 namespace Function;
 
@@ -13,7 +13,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 {
     public override Task<RunFunctionResponse> RunFunction(RunFunctionRequest request, ServerCallContext context)
     {
-        var resp = request.To(RequestExtensions.DefaultTTL);
+        var resp = request.To();
 
         var observedXR = request.GetObservedCompositeResource<V1alpha1KubeModelRepo?>();
 
@@ -33,11 +33,11 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
             logger.LogInformation("Running Function");
             resp.Normal("Running Function");
 
-            foreach (var repo in observedXR.Spec.Repos)
+            foreach (var group in observedXR.Spec.Repos.GroupBy(x => x.Group))
             {
-                var repoName = $"KubernetesCRDModelGen.Models.{repo.Group}";
+                var repoName = $"KubernetesCRDModelGen.Models.{group.Key}";
 
-                var model = new V1alpha1Repository()
+                var repo = new V1alpha1Repository()
                 {
                     Spec = new()
                     {
@@ -54,7 +54,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             AllowMergeCommit = false,
                             AllowRebaseMerge = false,
                             AllowSquashMerge = true,
-                            Description = $"C# models for Kubernetes CRDs in {repo.Group}",
+                            Description = $"C# models for Kubernetes CRDs in {group.Key}",
                             Private = false,
                             Template =
                             [
@@ -68,7 +68,81 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     }
                 };
 
-                resp.Desired.AddOrUpdate("repo-" + repo.Group, model);
+                resp.Desired.AddOrUpdate("repo-" + group.Key, repo);
+
+                var policy = new V1alpha1RepositoryRuleset()
+                {
+                    Spec = new()
+                    {
+                        ForProvider = new()
+                        {
+                            BypassActors =
+                            [
+                                new()
+                                {
+                                    ActorType = "OrganizationAdmin",
+                                    ActorId = 1
+                                }
+                            ],
+                            Enforcement = "active",
+                            Name = "main",
+                            Repository = repo.Spec.ForProvider.Name,
+                            Target = "branch",
+                            Rules =
+                            [
+                                new()
+                                {
+                                    PullRequest =
+                                    [
+                                        new()
+                                        {
+                                            RequiredReviewThreadResolution = true
+                                        }
+                                    ],
+                                    RequiredStatusChecks =
+                                    [
+                                        new()
+                                        {
+                                            RequiredCheck =
+                                            [
+                                                new()
+                                                {
+                                                    Context = "Create Release"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                };
+
+                resp.Desired.AddOrUpdate("policy-" + group.Key, policy);
+
+                var file = new V1alpha1RepositoryFile()
+                {
+                    Spec = new()
+                    {
+                        ManagementPolicies = [
+                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Observe,
+                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Create,
+                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Update,
+                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.LateInitialize,
+                        ],
+                        ForProvider = new()
+                        {
+                            Branch = "main",
+                            Content = "test",
+                            File = "appsettings.json",
+                            OverwriteOnCreate = true,
+                            Repository = repo.Spec.ForProvider.Name,
+                        }
+                    }
+                };
+
+                resp.Desired.AddOrUpdate((string)("file-" + group.Key), file);
+
             }
 
             // Get Desired resources and update Status if Ready
