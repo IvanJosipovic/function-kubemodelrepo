@@ -164,7 +164,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             Branch = "main",
                             Content = content,
                             File = "appsettings.json",
-                            OverwriteOnCreate = existingFile?.Spec.ForProvider.Content != content,
+                            OverwriteOnCreate = existingFile?.Status?.AtProvider?.Content != content,
                             Repository = repo.Spec.ForProvider.Name,
                             CommitMessage = "chore: update appsettings.json"
                         }
