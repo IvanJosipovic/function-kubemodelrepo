@@ -149,7 +149,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 var content = JsonSerializer.Serialize(new
                 {
                     Config = group.Select(x => x)
-                });
+                }, new JsonSerializerOptions() { WriteIndented = true });
 
                 var file = new V1alpha1RepositoryFile()
                 {
