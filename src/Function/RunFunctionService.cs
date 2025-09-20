@@ -13,6 +13,8 @@ namespace Function;
 
 public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRunnerServiceBase
 {
+    private static string ExternalName = "crossplane.io/external-name";
+
     public override Task<RunFunctionResponse> RunFunction(RunFunctionRequest request, ServerCallContext context)
     {
         var resp = request.To();
@@ -42,6 +44,13 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 var repo = new V1alpha1Repository()
                 {
+                    Metadata = new()
+                    {
+                        Annotations = new Dictionary<string, string>()
+                        {
+                            { ExternalName, repoName }
+                        }
+                    },
                     Spec = new()
                     {
                         ManagementPolicies = [
