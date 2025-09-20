@@ -175,13 +175,13 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.Desired.AddOrUpdate("file-" + group.Key, file);
 
-                resp.Requirements.Resources.Add("secret", new ResourceSelector()
+                resp.Requirements.Resources["secret"] = new ResourceSelector()
                 {
                     ApiVersion = V1Secret.KubeApiVersion,
                     Kind = V1Secret.KubeKind,
                     MatchName = observedXR.Spec.Credentials.SecretName,
                     Namespace = observedXR.Spec.Credentials.SecretNamespace
-                });
+                };
 
                 var requiredSecret = request.GetRequiredResource<V1Secret>("secret");
 
