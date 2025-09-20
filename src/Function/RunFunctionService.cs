@@ -235,13 +235,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             Payload = new()
                             {
                                 BaseUrl = $"https://api.github.com/repos/IvanJosipovic/{repoName}/actions/permissions/workflow",
-                                Body =
-                                    """
-                                    {
-                                        "default_workflow_permissions": "write",
-                                        "can_approve_pull_request_reviews": false
-                                    }
-                                    """
                             },
                             Mappings =
                             [
@@ -255,13 +248,27 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                 {
                                     Action = V1alpha2RequestSpecForProviderMappingsActionEnum.CREATE,
                                     Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
-                                    Url = "(.payload.baseUrl)"
+                                    Url = "(.payload.baseUrl)",
+                                    Body =
+                                        """
+                                        {
+                                            "default_workflow_permissions": "write",
+                                            "can_approve_pull_request_reviews": false
+                                        }
+                                        """
                                 },
                                 new()
                                 {
                                     Action = V1alpha2RequestSpecForProviderMappingsActionEnum.UPDATE,
                                     Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
-                                    Url = "(.payload.baseUrl)"
+                                    Url = "(.payload.baseUrl)",
+                                    Body =
+                                        """
+                                        {
+                                            "default_workflow_permissions": "write",
+                                            "can_approve_pull_request_reviews": false
+                                        }
+                                        """
                                 }
                             ],
                             WaitTimeout = "1m"
