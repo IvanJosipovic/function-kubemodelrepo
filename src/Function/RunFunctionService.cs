@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Apiextensions.Fn.Proto.V1;
 using EnumsNET;
 using Function.SDK.CSharp;
@@ -8,6 +9,7 @@ using Grpc.Core;
 using k8s;
 using k8s.Models;
 using KubernetesCRDModelGen.Models.actions.github.upbound.io;
+using KubernetesCRDModelGen.Models.http.crossplane.io;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
 
@@ -149,7 +151,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 var content = JsonSerializer.Serialize(new
                 {
                     Config = group.Select(x => x)
-                }, new JsonSerializerOptions() { WriteIndented = true });
+                }, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.Always });
 
                 var file = new V1alpha1RepositoryFile()
                 {
@@ -213,6 +215,47 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                         }
                     }
                 }
+
+                //https://docs.github.com/en/rest/actions/permissions?apiVersion=2022-11-28#get-default-workflow-permissions-for-a-repository
+                var secretSettings = new V1alpha1Request()
+                {
+                    Spec = new()
+                    {
+                        ForProvider = new()
+                        {
+                            Headers = new Dictionary<string, IList<string>>()
+                            {
+                                { "Accept", ["application/vnd.github+json"] },
+                                { "Authorization", [$$$"""("Bearer  {{ {{{observedXR.Spec.Credentials.SecretName}}}:{{{observedXR.Spec.Credentials.SecretNamespace}}}:GHPAT }}")"""] },
+                                { "X-GitHub-Api-Version", ["2022-11-28"] }
+                            },
+                            Payload = new()
+                            {
+                                BaseUrl = $"https://api.github.com/repos/IvanJosipovic/{repoName}/actions/permissions/workflow",
+                                Body =
+                                    """
+                                    {
+                                        "default_workflow_permissions": "write",
+                                        "can_approve_pull_request_reviews": false
+                                    }
+                                    """
+                            },
+                            Mappings =
+                            [
+                                new()
+                                {
+                                    Method = V1alpha1RequestSpecForProviderMappingsMethodEnum.GET,
+                                },
+                                new()
+                                {
+                                    Method = V1alpha1RequestSpecForProviderMappingsMethodEnum.PUT,
+                                }
+                            ]
+                        }
+                    }
+                };
+
+                resp.Desired.AddOrUpdate("action-permission-" + group.Key, secretSettings);
             }
 
             // Get Desired resources and update Status if Ready
