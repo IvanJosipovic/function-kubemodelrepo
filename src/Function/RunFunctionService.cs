@@ -131,31 +131,36 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.Desired.AddOrUpdate("policy-" + group.Key, policy);
 
+                var existingFile = request.GetObservedResource<V1alpha1RepositoryFile?>("file-" + group.Key);
+
+                var content = JsonSerializer.Serialize(new
+                {
+                    Config = group.Select(x => x)
+                });
+
                 var file = new V1alpha1RepositoryFile()
                 {
                     Spec = new()
                     {
                         ManagementPolicies = [
                             V1alpha1RepositoryFileSpecManagementPoliciesEnum.Observe,
-                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Create,
-                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Update,
-                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.LateInitialize,
-                        ],
+                                V1alpha1RepositoryFileSpecManagementPoliciesEnum.Create,
+                                V1alpha1RepositoryFileSpecManagementPoliciesEnum.Update,
+                                V1alpha1RepositoryFileSpecManagementPoliciesEnum.LateInitialize,
+                            ],
                         ForProvider = new()
                         {
                             Branch = "main",
-                            Content = JsonSerializer.Serialize(new
-                            {
-                                Config = group.Select(x => x)
-                            }),
+                            Content = content,
                             File = "appsettings.json",
-                            OverwriteOnCreate = true,
+                            OverwriteOnCreate = false,
                             Repository = repo.Spec.ForProvider.Name,
+                            CommitMessage = "chore: update appsettings.json"
                         }
                     }
                 };
 
-                resp.Desired.AddOrUpdate((string)("file-" + group.Key), file);
+                resp.Desired.AddOrUpdate("file-" + group.Key, file);
             }
 
             // Get Desired resources and update Status if Ready
