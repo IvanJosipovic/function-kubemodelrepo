@@ -19,6 +19,8 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 {
     public static string ExternalName = "crossplane.io/external-name";
 
+    public static JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+
     public override Task<RunFunctionResponse> RunFunction(RunFunctionRequest request, ServerCallContext context)
     {
         var resp = request.To();
@@ -151,7 +153,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 var content = JsonSerializer.Serialize(new
                 {
                     Config = group.Select(x => x)
-                }, new JsonSerializerOptions() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull });
+                }, jsonSerializerOptions);
 
                 var file = new V1alpha1RepositoryFile()
                 {
@@ -216,6 +218,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     }
                 }
 
+                // This API is not supported by the Provider
                 //https://docs.github.com/en/rest/actions/permissions?apiVersion=2022-11-28#get-default-workflow-permissions-for-a-repository
                 var secretSettings = new V1alpha2Request()
                 {
@@ -252,16 +255,19 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                 {
                                     Action = V1alpha2RequestSpecForProviderMappingsActionEnum.OBSERVE,
                                     Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.GET,
+                                    Url = "(.payload.baseUrl)"
                                 },
                                 new()
                                 {
                                     Action = V1alpha2RequestSpecForProviderMappingsActionEnum.CREATE,
                                     Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
+                                    Url = "(.payload.baseUrl)"
                                 },
                                 new()
                                 {
                                     Action = V1alpha2RequestSpecForProviderMappingsActionEnum.UPDATE,
                                     Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
+                                    Url = "(.payload.baseUrl)"
                                 }
                             ]
                         }
