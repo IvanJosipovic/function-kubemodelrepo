@@ -229,7 +229,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             Headers = new Dictionary<string, IList<string>>()
                             {
                                 { "Accept", ["application/vnd.github+json"] },
-                                { "Authorization", [$$$"""("Bearer  {{ {{{observedXR.Spec.Credentials.SecretName}}}:{{{observedXR.Spec.Credentials.SecretNamespace}}}:GHPAT }}")"""] },
+                                { "Authorization", [$$$"""Bearer  {{ {{{observedXR.Spec.Credentials.SecretName}}}:{{{observedXR.Spec.Credentials.SecretNamespace}}}:GHPAT }}"""] },
                                 { "X-GitHub-Api-Version", ["2022-11-28"] }
                             },
                             Payload = new()
