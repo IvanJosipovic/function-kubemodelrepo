@@ -227,7 +227,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                 }
                             };
 
-                            resp.Desired.AddOrUpdate("secret-" + secretObj.Spec.ForProvider.SecretName, secretObj);
+                            resp.Desired.AddOrUpdate($"secret-{repo.Spec.ForProvider.Name}-{secretObj.Spec.ForProvider.SecretName}", secretObj);
                         }
                     }
                 }
