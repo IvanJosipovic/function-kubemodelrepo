@@ -13,7 +13,7 @@ namespace Function;
 
 public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRunnerServiceBase
 {
-    private static string ExternalName = "crossplane.io/external-name";
+    public static string ExternalName = "crossplane.io/external-name";
 
     public override Task<RunFunctionResponse> RunFunction(RunFunctionRequest request, ServerCallContext context)
     {

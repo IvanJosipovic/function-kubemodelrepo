@@ -46,6 +46,13 @@ public class UnitTest1
 
         var expectedResource = new V1alpha1Repository()
         {
+            Metadata = new()
+            {
+                Annotations = new Dictionary<string, string>()
+                {
+                    { RunFunctionService.ExternalName, "KubernetesCRDModelGen.Models.test.com" }
+                }
+            },
             Spec = new()
             {
                 ManagementPolicies = [
