@@ -19,6 +19,16 @@ spec:
         properties:
           spec:
             properties:
+              credentials:
+                type: object
+                properties:
+                  secertName:
+                    type: string
+                  secretNamespace:
+                    type: string
+                required:
+                - secretName
+                - secretNamespace
               repos:
                 type: array
                 items:
@@ -77,6 +87,7 @@ spec:
                   - group
             type: object
             required:
+            - credentials
             - repos
         required:
         - spec

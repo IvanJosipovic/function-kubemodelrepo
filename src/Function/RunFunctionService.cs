@@ -7,6 +7,7 @@ using k8s.Models;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
 using System.Text.Json;
+using KubernetesCRDModelGen.Models.actions.github.upbound.io;
 
 namespace Function;
 
@@ -16,7 +17,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
     {
         var resp = request.To();
 
-        var observedXR = request.GetObservedCompositeResource<V1alpha1KubeModelRepo?>();
+        var observedXR = request.GetObservedCompositeResource<V1alpha1KubeModelRepo>();
 
         if (observedXR == null)
         {
@@ -153,7 +154,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             Branch = "main",
                             Content = content,
                             File = "appsettings.json",
-                            OverwriteOnCreate = false,
+                            OverwriteOnCreate = existingFile?.Spec.ForProvider.Content != content,
                             Repository = repo.Spec.ForProvider.Name,
                             CommitMessage = "chore: update appsettings.json"
                         }
@@ -161,6 +162,42 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 };
 
                 resp.Desired.AddOrUpdate("file-" + group.Key, file);
+
+                resp.Requirements.Resources.Add("secret", new ResourceSelector()
+                {
+                    ApiVersion = V1Secret.KubeApiVersion,
+                    Kind = V1Secret.KubeApiVersion,
+                    MatchName = observedXR.Spec.Credentials.SecertName,
+                    Namespace = observedXR.Spec.Credentials.SecretNamespace
+                });
+
+                var requiredSecret = request.GetRequiredResource<V1Secret>("secret");
+
+                if (requiredSecret != null)
+                {
+                    foreach (var item in requiredSecret.Data)
+                    {
+                        var secret = new V1alpha1ActionsSecret()
+                        {
+                            Spec = new()
+                            {
+                                ForProvider = new()
+                                {
+                                    SecretName = item.Key,
+                                    PlaintextValueSecretRef = new()
+                                    {
+                                        Name = observedXR.Spec.Credentials.SecretNamespace,
+                                        Key = item.Key,
+                                        Namespace = observedXR.Spec.Credentials.SecretNamespace
+                                    },
+                                    Repository = repo.Spec.ForProvider.Name,
+                                }
+                            }
+                        };
+
+                        resp.Desired.AddOrUpdate("secret-" + secret.Spec.ForProvider.SecretName, secret);
+                    }
+                }
             }
 
             // Get Desired resources and update Status if Ready
