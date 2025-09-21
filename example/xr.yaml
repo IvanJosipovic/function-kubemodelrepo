@@ -7,10 +7,10 @@ spec:
     secretName: kubemodelrepo
     secretNamespace: default
   repos:
-  # - group: databricks.upbound.io
-  #   oci:
-  #     image: xpkg.upbound.io/upbound/provider-databricks
-  #     Semver: ">=0.1.0"
+  - group: databricks.upbound.io
+    oci:
+      image: xpkg.upbound.io/upbound/provider-databricks
+      semVer: ">=0.1.0"
   # - group: azure.com
   #   gitHub:
   #     repo: https://api.github.com/repos/Azure/azure-service-operator/releases
@@ -95,12 +95,12 @@ spec:
   #   directUrl:
   #     urls:
   #     - https://github.com/crossplane-contrib/provider-upjet-aws/archive/refs/heads/main.zip
-  #   filter: provider-upjet-aws-main/package/crds/
+  #     filter: provider-upjet-aws-main/package/crds/
   # - group: databricks.crossplane.io
   #   directUrl:
   #     urls:
   #     - https://github.com/glalanne/provider-databricks/archive/refs/heads/main.zip
-  #   filter: provider-databricks-main/package/crds/
+  #     filter: provider-databricks-main/package/crds/
   # - group: gcp.upbound.io
   #   directUrl:
   #     urls:
@@ -145,7 +145,7 @@ spec:
   #   directUrl:
   #     urls:
   #     - https://github.com/upbound/provider-vault/archive/refs/heads/main.zip
-  #   filter: provider-vault-main/package/crds/
+  #     filter: provider-vault-main/package/crds/
   # - group: crossplane.io
   #   directUrl:
   #     urls:
@@ -156,8 +156,13 @@ spec:
   #     urls:
   #     - https://github.com/kubernetes-csi/external-snapshotter/archive/refs/heads/master.zip
   #     filter: external-snapshotter-master/client/config/crd/
-  - group: gateway.networking.k8s.io
-    directUrl:
-      urls:
-      - https://github.com/kubernetes-sigs/gateway-api/archive/refs/heads/main.zip
-      filter: gateway-api-main/config/crd/standard/
+  # - group: gateway.networking.k8s.io
+  #   directUrl:
+  #     urls:
+  #     - https://github.com/kubernetes-sigs/gateway-api/archive/refs/heads/main.zip
+  #     filter: gateway-api-main/config/crd/standard/
+  # - group: http.crossplane.io
+  #   directUrl:
+  #     urls:
+  #     - https://github.com/crossplane-contrib/provider-http/archive/refs/heads/main.zip
+  #     filter: provider-http-main/package/crds/
