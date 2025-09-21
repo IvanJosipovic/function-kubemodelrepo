@@ -1,17 +1,19 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Unicode;
 using Apiextensions.Fn.Proto.V1;
 using EnumsNET;
-using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
 using Function.SDK.CSharp;
+using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
 using Google.Protobuf;
 using Grpc.Core;
-using k8s.Models;
 using k8s;
+using k8s.Models;
 using KubernetesCRDModelGen.Models.actions.github.upbound.io;
 using KubernetesCRDModelGen.Models.http.crossplane.io;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 
 namespace Function;
 
@@ -19,7 +21,12 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 {
     public static string ExternalName = "crossplane.io/external-name";
 
-    public static JsonSerializerOptions jsonSerializerOptions = new() { WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+    public static JsonSerializerOptions jsonSerializerOptions = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+    };
 
     public override Task<RunFunctionResponse> RunFunction(RunFunctionRequest request, ServerCallContext context)
     {
