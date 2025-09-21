@@ -101,12 +101,27 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                         ],
                         ForProvider = new()
                         {
+                            Conditions =
+                            [
+                                new()
+                                {
+                                    RefName =
+                                    [
+                                        new (){
+                                            Include =
+                                            [
+                                                "~DEFAULT_BRANCH"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ],
                             BypassActors =
                             [
                                 new()
                                 {
-                                    ActorType = "OrganizationAdmin",
-                                    ActorId = 1,
+                                    ActorType = "RepositoryRole",
+                                    ActorId = 5, //admin
                                     BypassMode = "always"
                                 }
                             ],
@@ -118,15 +133,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             [
                                 new()
                                 {
-                                    BranchNamePattern =
-                                    [
-                                        new()
-                                        {
-                                            Name = "main",
-                                            Pattern = "main",
-                                            Operator = "regex"
-                                        }
-                                    ],
                                     PullRequest =
                                     [
                                         new()
@@ -142,7 +148,8 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                             [
                                                 new()
                                                 {
-                                                    Context = "Create Release"
+                                                    Context = "call-workflow / Create Release",
+                                                    IntegrationId = 15368 // Github Actions
                                                 }
                                             ]
                                         }
