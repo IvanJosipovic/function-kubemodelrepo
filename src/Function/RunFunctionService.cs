@@ -67,13 +67,20 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                         ],
                         ForProvider = new()
                         {
-                            Name = repoName,
                             AllowAutoMerge = true,
                             AllowMergeCommit = false,
                             AllowRebaseMerge = false,
                             AllowSquashMerge = true,
+                            AllowUpdateBranch = true,
+                            DeleteBranchOnMerge = true,
                             Description = $"C# models for Kubernetes CRDs in {group.Key}",
+                            HasDiscussions = true,
+                            HasIssues = true,
+                            HasWiki = false,
+                            Name = repoName,
                             Private = false,
+                            SquashMergeCommitMessage = "COMMIT_MESSAGES",
+                            SquashMergeCommitTitle = "PR_TITLE",
                             Template =
                             [
                                 new()
@@ -81,6 +88,13 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                     Owner = "IvanJosipovic",
                                     Repository = "KubernetesCRDModelGen.Models.Template"
                                 }
+                            ],
+                            Topics =
+                            [
+                                "customresourcedefinition",
+                                "kubernetes",
+                                "model",
+                                "dotnet"
                             ]
                         }
                     }
@@ -137,7 +151,8 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                     [
                                         new()
                                         {
-                                            RequiredReviewThreadResolution = true
+                                            RequiredReviewThreadResolution = true,
+                                            DismissStaleReviewsOnPush = true
                                         }
                                     ],
                                     RequiredStatusChecks =
