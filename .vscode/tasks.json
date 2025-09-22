@@ -19,7 +19,8 @@
         "render",
         "example/xr.yaml",
         "example/composition.yaml",
-        "example/functions.yaml"
+        "example/functions.yaml",
+        "--required-resources example/extra/"
       ],
       "problemMatcher": "$msCompile"
     }
