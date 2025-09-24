@@ -235,7 +235,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             <ImplicitUsings>enable</ImplicitUsings>
                             <Nullable>enable</Nullable>
                             <LangVersion>latest</LangVersion>
-                            <RepositoryUrl>https://github.com/IvanJosipovic/KubernetesCRDModelGen</RepositoryUrl>
                             <RepositoryType>git</RepositoryType>
                             <PackageLicenseExpression>MIT</PackageLicenseExpression>
                             <PublishRepositoryUrl>true</PublishRepositoryUrl>
