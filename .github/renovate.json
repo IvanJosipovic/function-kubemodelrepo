@@ -13,6 +13,15 @@
   ],
   "packageRules": [
     {
+      "groupName": "function.sdk.csharp",
+      "separateMajorMinor": true,
+      "groupSlug": "function-sdk-csharp",
+      "matchPackageNames": [
+        "/Function.SDK.CSharp",
+        "/Function.SDK.CSharp.*/"
+      ]
+    },
+    {
       "groupName": "KubernetesCRDModelGen",
       "separateMajorMinor": true,
       "groupSlug": "kube-crd-model-gen",
@@ -69,3 +78,4 @@
     }
   ]
 }
+
