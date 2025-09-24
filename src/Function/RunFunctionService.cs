@@ -190,7 +190,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     Config = group.Select(x => x)
                 }, jsonSerializerOptions);
 
-                resp.AddFile(request, repoName, "appsettings.json", appsettingsContent, $"chore: update appsettings.json");
+                resp.AddFile(repoName, "appsettings.json", appsettingsContent, $"chore: update appsettings.json");
 
                 var dotNetSDKVersion = "10.0.100-rc.1.25451.107";
 
@@ -204,7 +204,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     }
                     """;
 
-                resp.AddFile(request, repoName, "global.json", global, $"chore: update .NET SDK to v{dotNetSDKVersion}");
+                resp.AddFile(repoName, "global.json", global, $"chore: update .NET SDK to v{dotNetSDKVersion}");
 
                 var deps = $"""
                     <Project>
@@ -221,7 +221,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     </Project>
                     """;
 
-                resp.AddFile(request, repoName, "Directory.Build.props", deps, $"fix: update dependencies");
+                resp.AddFile(repoName, "Directory.Build.props", deps, $"fix: update dependencies");
 
                 var csProj = $"""
                     <Project Sdk="Microsoft.NET.Sdk">
@@ -254,7 +254,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     </Project>
                     """;
 
-                resp.AddFile(request, repoName, repoName + ".csproj", csProj, $"fix: update .NET settings");
+                resp.AddFile(repoName, repoName + ".csproj", csProj, $"fix: update .NET settings");
 
                 var readme = $$"""
                     ## {{repoName}}
@@ -263,7 +263,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     C# models for Kubernetes CRDs in group {{group.Key}}
                     """;
 
-                resp.AddFile(request, repoName, "README.md", readme, $"chore: update README.md");
+                resp.AddFile(repoName, "README.md", readme, $"chore: update README.md");
 
                 resp.Requirements.Resources["secret"] = new ResourceSelector()
                 {
@@ -390,11 +390,9 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
 public static class Extensions
 {
-    public static void AddFile(this RunFunctionResponse resp, RunFunctionRequest request, string repository, string fileName, string content, string commitMessage)
+    public static void AddFile(this RunFunctionResponse resp, string repository, string fileName, string content, string commitMessage)
     {
         var key = $"addFile-{repository}-{fileName}";
-
-        //var existingFile = request.GetObservedResource<V1alpha1RepositoryFile?>(key);
 
         var newFile = new V1alpha1RepositoryFile()
         {
