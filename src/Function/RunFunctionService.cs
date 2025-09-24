@@ -1,5 +1,6 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Apiextensions.Fn.Proto.V1;
@@ -80,7 +81,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             AllowSquashMerge = true,
                             AllowUpdateBranch = true,
                             DeleteBranchOnMerge = true,
-                            Description = $"C# models for Kubernetes CRDs in {group.Key}",
+                            Description = $"C# models for Kubernetes CRDs in group {group.Key}",
                             HasDiscussions = true,
                             HasIssues = true,
                             HasWiki = false,
@@ -115,8 +116,8 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     {
                         ManagementPolicies =
                         [
-                            V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.Create,
                             V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.Observe,
+                            V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.Create,
                             V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.Update,
                             V1alpha1RepositoryRulesetSpecManagementPoliciesEnum.LateInitialize
                         ],
@@ -148,7 +149,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             ],
                             Enforcement = "active",
                             Name = "main",
-                            Repository = repo.Spec.ForProvider.Name,
+                            Repository = repoName,
                             Target = "branch",
                             Rules =
                             [
@@ -184,36 +185,86 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.Desired.AddOrUpdate("ruleset-" + group.Key, ruleset);
 
-                var existingFile = request.GetObservedResource<V1alpha1RepositoryFile?>("file-" + group.Key);
-
-                var content = JsonSerializer.Serialize(new
+                var appsettingsContent = JsonSerializer.Serialize(new
                 {
                     Config = group.Select(x => x)
                 }, jsonSerializerOptions);
 
-                var file = new V1alpha1RepositoryFile()
-                {
-                    Spec = new()
-                    {
-                        ManagementPolicies = [
-                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Observe,
-                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Create,
-                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.Update,
-                            V1alpha1RepositoryFileSpecManagementPoliciesEnum.LateInitialize,
-                        ],
-                        ForProvider = new()
-                        {
-                            Branch = "main",
-                            Content = content,
-                            File = "appsettings.json",
-                            OverwriteOnCreate = existingFile?.Status?.AtProvider?.Content != content,
-                            Repository = repo.Spec.ForProvider.Name,
-                            CommitMessage = "chore: update appsettings.json"
-                        }
-                    }
-                };
+                resp.AddFile(request, repoName, "appsettings.json", appsettingsContent, $"chore: update appsettings.json");
 
-                resp.Desired.AddOrUpdate("file-" + group.Key, file);
+                var dotNetSDKVersion = "10.0.100-rc.1.25451.107";
+
+                var global = $$"""
+                    {
+                      "sdk": {
+                        "version": "{{dotNetSDKVersion}}",
+                        "rollForward": "latestFeature",
+                        "allowPrerelease": false
+                      }
+                    }
+                    """;
+
+                resp.AddFile(request, repoName, "global.json", global, $"chore: update .NET SDK to {dotNetSDKVersion}");
+
+                var deps = $"""
+                    <Project>
+                        <ItemGroup>
+                            <PackageReference Include="KubernetesClient" Version="17.0.14" />
+                            <PackageReference Include="KubernetesCRDModelGen.SourceGenerator" Version="1.0.0-alpha.620">
+                                <PrivateAssets>all</PrivateAssets>
+                            </PackageReference>
+                        </ItemGroup>
+
+                        <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+                            <PackageReference Include="System.Text.Json" Version="9.0.*" />
+                        </ItemGroup>
+                    </Project>
+                    """;
+
+                resp.AddFile(request, repoName, "Directory.Build.props", deps, $"fix: update dependencies");
+
+                var csProj = $"""
+                    <Project Sdk="Microsoft.NET.Sdk">
+                        <PropertyGroup>
+                            <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+                            <PackageId>{repoName}</PackageId>
+                            <RepositoryUrl>https://github.com/IvanJosipovic/{repoName}</RepositoryUrl>
+                            <Description>C# models for Kubernetes CRDs in group {group.Key}</Description>
+                            <Authors>Ivan Josipovic</Authors>
+                            <PackageTags>Kubernetes CustomResourceDefinition CRD Models</PackageTags>
+                            <ImplicitUsings>enable</ImplicitUsings>
+                            <Nullable>enable</Nullable>
+                            <LangVersion>latest</LangVersion>
+                            <RepositoryUrl>https://github.com/IvanJosipovic/KubernetesCRDModelGen</RepositoryUrl>
+                            <RepositoryType>git</RepositoryType>
+                            <PackageLicenseExpression>MIT</PackageLicenseExpression>
+                            <PublishRepositoryUrl>true</PublishRepositoryUrl>
+                            <IncludeSymbols>true</IncludeSymbols>
+                            <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+                            <IsPackable>true</IsPackable>
+                            <GenerateDocumentationFile>true</GenerateDocumentationFile>
+                            <PackageReadmeFile>README.md</PackageReadmeFile>
+                            <NoWarn>$(NoWarn);CS1591;CS8618</NoWarn>
+                            <WarningsAsErrors>$(WarningsAsErrors);CS8784;CS8785</WarningsAsErrors>
+                        </PropertyGroup>
+
+                        <ItemGroup>
+                            <None Include="README.md" Pack="true" PackagePath="\" />
+                            <AdditionalFiles Include="crds\*.yaml" />
+                        </ItemGroup>
+                    </Project>
+                    """;
+
+                resp.AddFile(request, repoName, repoName + ".csproj", csProj, $"fix: update .NET settings");
+
+                var readme = $$"""
+                    ## {{repoName}}
+                    [![Nuget](https://img.shields.io/nuget/vpre/{{repoName}}.svg?style=flat-square)](https://www.nuget.org/packages/{{repoName}})[![Nuget)](https://img.shields.io/nuget/dt/{{repoName}}.svg?style=flat-square)](https://www.nuget.org/packages/{{repoName}})
+
+                    C# models for Kubernetes CRDs in group {{group.Key}}
+                    """;
+
+                resp.AddFile(request, repoName, "README.md", readme, $"chore: update README.md");
 
                 resp.Requirements.Resources["secret"] = new ResourceSelector()
                 {
@@ -233,6 +284,13 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                         {
                             var secretObj = new V1alpha1ActionsSecret()
                             {
+                                Metadata = new()
+                                {
+                                    Annotations = new Dictionary<string, string>()
+                                    {
+                                        { ExternalName, repoName + ":" + data.Key }
+                                    }
+                                },
                                 Spec = new()
                                 {
                                     ManagementPolicies =
@@ -251,12 +309,12 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                             Key = data.Key,
                                             Namespace = observedXR.Spec.Credentials.SecretNamespace
                                         },
-                                        Repository = repo.Spec.ForProvider.Name,
+                                        Repository = repoName,
                                     }
                                 }
                             };
 
-                            resp.Desired.AddOrUpdate($"secret-{repo.Spec.ForProvider.Name}-{secretObj.Spec.ForProvider.SecretName}", secretObj);
+                            resp.Desired.AddOrUpdate($"secret-{repoName}-{secretObj.Spec.ForProvider.SecretName}", secretObj);
                         }
                     }
                 }
@@ -328,5 +386,47 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
             return Task.FromResult(resp);
         }
+    }
+}
+
+public static class Extensions
+{
+    public static void AddFile(this RunFunctionResponse resp, RunFunctionRequest request, string repository, string fileName, string content, string commitMessage)
+    {
+        var key = $"addFile-{fileName}";
+
+        var existingFile = request.GetObservedResource<V1alpha1RepositoryFile?>(key);
+
+        var newFile = new V1alpha1RepositoryFile()
+        {
+            Metadata = new()
+            {
+                Annotations = new Dictionary<string, string>()
+                {
+                    { RunFunctionService.ExternalName, $"{repository}/{fileName}" }
+                }
+            },
+            Spec = new()
+            {
+                ManagementPolicies =
+                [
+                    V1alpha1RepositoryFileSpecManagementPoliciesEnum.Observe,
+                    V1alpha1RepositoryFileSpecManagementPoliciesEnum.Create,
+                    V1alpha1RepositoryFileSpecManagementPoliciesEnum.Update,
+                    V1alpha1RepositoryFileSpecManagementPoliciesEnum.LateInitialize
+                ],
+                ForProvider = new()
+                {
+                    Branch = "main",
+                    Content = content,
+                    File = fileName,
+                    OverwriteOnCreate = existingFile?.Status?.AtProvider?.Content != content,
+                    Repository = repository,
+                    CommitMessage = commitMessage
+                }
+            }
+        };
+
+        resp.Desired.AddOrUpdate(key, newFile);
     }
 }

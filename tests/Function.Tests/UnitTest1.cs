@@ -70,7 +70,7 @@ public class UnitTest1
                     AllowSquashMerge = true,
                     AllowUpdateBranch = true,
                     DeleteBranchOnMerge = true,
-                    Description = $"C# models for Kubernetes CRDs in test.com",
+                    Description = $"C# models for Kubernetes CRDs in group test.com",
                     HasDiscussions = true,
                     HasIssues = true,
                     HasWiki = false,
