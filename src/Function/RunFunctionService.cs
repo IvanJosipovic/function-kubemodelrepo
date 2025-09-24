@@ -204,7 +204,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     }
                     """;
 
-                resp.AddFile(request, repoName, "global.json", global, $"chore: update .NET SDK to {dotNetSDKVersion}");
+                resp.AddFile(request, repoName, "global.json", global, $"chore: update .NET SDK to v{dotNetSDKVersion}");
 
                 var deps = $"""
                     <Project>
@@ -393,7 +393,7 @@ public static class Extensions
 {
     public static void AddFile(this RunFunctionResponse resp, RunFunctionRequest request, string repository, string fileName, string content, string commitMessage)
     {
-        var key = $"addFile-{fileName}";
+        var key = $"addFile-{repository}-{fileName}";
 
         //var existingFile = request.GetObservedResource<V1alpha1RepositoryFile?>(key);
 
