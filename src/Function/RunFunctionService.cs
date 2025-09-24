@@ -395,7 +395,7 @@ public static class Extensions
     {
         var key = $"addFile-{fileName}";
 
-        var existingFile = request.GetObservedResource<V1alpha1RepositoryFile?>(key);
+        //var existingFile = request.GetObservedResource<V1alpha1RepositoryFile?>(key);
 
         var newFile = new V1alpha1RepositoryFile()
         {
@@ -420,7 +420,7 @@ public static class Extensions
                     Branch = "main",
                     Content = content,
                     File = fileName,
-                    OverwriteOnCreate = existingFile?.Status?.AtProvider?.Content != content,
+                    OverwriteOnCreate = false,
                     Repository = repository,
                     CommitMessage = commitMessage
                 }
