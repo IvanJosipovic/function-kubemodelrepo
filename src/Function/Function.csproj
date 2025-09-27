@@ -25,9 +25,9 @@
   <ItemGroup>
     <PackageReference Include="Function.SDK.CSharp" Version="1.0.0-alpha.41" />
     <PackageReference Include="Function.SDK.CSharp.SourceGenerator" Version="1.0.0-alpha.41" />
-    <PackageReference Include="KubernetesCRDModelGen.Models.crossplane.io" Version="1.2.2" />
-    <PackageReference Include="KubernetesCRDModelGen.Models.github.upbound.io" Version="1.4.1" />
-    <PackageReference Include="KubernetesCRDModelGen.Models.http.crossplane.io" Version="1.4.3" />
+    <PackageReference Include="KubernetesCRDModelGen.Models.crossplane.io" Version="1.2.3" />
+    <PackageReference Include="KubernetesCRDModelGen.Models.github.upbound.io" Version="1.4.2" />
+    <PackageReference Include="KubernetesCRDModelGen.Models.http.crossplane.io" Version="1.4.4" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
   </ItemGroup>
 
