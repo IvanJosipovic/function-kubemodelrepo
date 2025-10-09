@@ -11,6 +11,15 @@ on:
     types: [opened, reopened, synchronize]
   merge_group:
 
+permissions:
+  id-token: write
+  contents: write
+  actions: write
+  checks: write
+  issues: write
+  packages: write
+  pull-requests: write
+
 jobs:
   build-test:
     name: Build & Test & Release
@@ -89,5 +98,6 @@ jobs:
       if: steps.semantic.outputs.new_release_published == 'true'
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${GITHUB_ACTOR} --password-stdin
+
 
         docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/${GITHUB_REPOSITORY,,}/function-kubemodelrepo:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'alpha' && 'alpha' || github.ref_name == 'beta' && 'beta' }} -t ghcr.io/${GITHUB_REPOSITORY,,}/function-kubemodelrepo:${{ steps.semantic.outputs.new_release_version }} --build-arg VERSION=${{ steps.semantic.outputs.new_release_version }} src/Function
