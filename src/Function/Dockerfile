@@ -1,5 +1,5 @@
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:9.0-alpine3.22@sha256:d2bef2c7ecb618e02c5e2f29b448be0aca1f82993800066c3622e7cabfca9ead AS base
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:9.0-alpine3.22@sha256:5e8dca92553951e42caed00f2568771b0620679f419a28b1335da366477d7f98 AS base
 WORKDIR /app
 EXPOSE 9443
 
@@ -45,7 +45,7 @@ USER $APP_UID
 
 # This stage is used to build the service project
 ARG BUILDPLATFORM=linux/amd64
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine3.22@sha256:306ad935d9543becc91b59b61c20e6fecba6faed34e975fbcb378caa185e8b85 AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine3.22@sha256:f271ed7d0fd9c5a7ed0acafed8a2bc978bb65c19dcd2eeea0415adef142ffc87 AS build
 ARG BUILD_CONFIGURATION=Release
 ARG VERSION=0.0.1
 WORKDIR /src
