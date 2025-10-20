@@ -8,7 +8,6 @@ using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
 using Grpc.Core;
 using k8s.Models;
 using KubernetesCRDModelGen.Models.actions.github.upbound.io;
-using KubernetesCRDModelGen.Models.http.crossplane.io;
 using KubernetesCRDModelGen.Models.repo.github.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
 
@@ -364,67 +363,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                         }
                     }
                 }
-
-                // This API is not supported by the Provider
-                //https://docs.github.com/en/rest/actions/permissions?apiVersion=2022-11-28#get-default-workflow-permissions-for-a-repository
-                var secretSettings = new V1alpha2Request()
-                {
-                    Spec = new()
-                    {
-                        DeletionPolicy = V1alpha2RequestSpecDeletionPolicyEnum.Orphan,
-                        ForProvider = new()
-                        {
-                            Headers = new Dictionary<string, IList<string>>()
-                            {
-                                { "Accept", ["application/vnd.github+json"] },
-                                { "Authorization", [$$$"""Bearer {{ {{{observedXR.Spec.Credentials.SecretName}}}:{{{observedXR.Spec.Credentials.SecretNamespace}}}:GHPAT }}"""] },
-                                //{ "X-GitHub-Api-Version", ["2022-11-28"] }
-                            },
-                            Payload = new()
-                            {
-                                BaseUrl = $"https://api.github.com/repos/IvanJosipovic/{repoName}/actions/permissions/workflow",
-                            },
-                            Mappings =
-                            [
-                                new()
-                                {
-                                    Action = V1alpha2RequestSpecForProviderMappingsActionEnum.OBSERVE,
-                                    Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.GET,
-                                    Url = "(.payload.baseUrl)"
-                                },
-                                new()
-                                {
-                                    Action = V1alpha2RequestSpecForProviderMappingsActionEnum.CREATE,
-                                    Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
-                                    Url = "(.payload.baseUrl)",
-                                    Body =
-                                        """
-                                        {
-                                            "default_workflow_permissions": "write",
-                                            "can_approve_pull_request_reviews": false
-                                        }
-                                        """
-                                },
-                                new()
-                                {
-                                    Action = V1alpha2RequestSpecForProviderMappingsActionEnum.UPDATE,
-                                    Method = V1alpha2RequestSpecForProviderMappingsMethodEnum.PUT,
-                                    Url = "(.payload.baseUrl)",
-                                    Body =
-                                        """
-                                        {
-                                            "default_workflow_permissions": "read",
-                                            "can_approve_pull_request_reviews": false
-                                        }
-                                        """
-                                }
-                            ],
-                            WaitTimeout = "1m"
-                        }
-                    }
-                };
-
-                resp.Desired.AddOrUpdate("action-permission-" + group.Key, secretSettings);
             }
 
             // Get Desired resources and update Status if Ready
