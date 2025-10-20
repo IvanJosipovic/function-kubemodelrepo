@@ -1,15 +1,11 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Apiextensions.Fn.Proto.V1;
-using EnumsNET;
 using Function.SDK.CSharp;
 using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
-using Google.Protobuf;
 using Grpc.Core;
-using k8s;
 using k8s.Models;
 using KubernetesCRDModelGen.Models.actions.github.upbound.io;
 using KubernetesCRDModelGen.Models.http.crossplane.io;
@@ -265,6 +261,57 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.AddFile(repoName, "README.md", readme, $"chore: update README.md");
 
+                var cicd = """
+                    name: CICD
+
+                    on:
+                      push:
+                        branches:
+                        - 'main'
+                        - 'alpha'
+                        - 'beta'
+                      pull_request:
+                        types: [opened, reopened, synchronize]
+                      workflow_dispatch:
+
+                    permissions:
+                      id-token: write
+                      contents: write
+                      actions: write
+                      checks: write
+                      issues: write
+                      pull-requests: write
+
+                    jobs:
+                      call-workflow:
+                        uses: IvanJosipovic/KubernetesCRDModelGen/.github/workflows/cicd-template.yaml@main
+                        secrets:
+                          GH_TOKEN: ${{ secrets.GHPAT }}
+                          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+                    """;
+
+                resp.AddFile(repoName, ".github/workflows/cicd.yaml", cicd, $"chore: update .github/workflows/cicd.yaml");
+
+                var crdupdate = """
+                    name: Update
+
+                    on:
+                      push:
+                        branches:
+                        - main
+                      schedule:
+                      - cron: "0 * * * *"
+                      workflow_dispatch:
+
+                    jobs:
+                      call-workflow:
+                        uses: IvanJosipovic/KubernetesCRDModelGen/.github/workflows/update-template.yaml@main
+                        secrets:
+                          GH_TOKEN: ${{secrets.GHPAT}}
+                    """;
+
+                resp.AddFile(repoName, ".github/workflows/update.yaml", crdupdate, $"chore: update .github/workflows/update.yaml");
+
                 resp.Requirements.Resources["secret"] = new ResourceSelector()
                 {
                     ApiVersion = V1Secret.KubeApiVersion,
@@ -366,7 +413,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                     Body =
                                         """
                                         {
-                                            "default_workflow_permissions": "write",
+                                            "default_workflow_permissions": "read",
                                             "can_approve_pull_request_reviews": false
                                         }
                                         """
