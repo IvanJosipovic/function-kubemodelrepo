@@ -187,14 +187,13 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.AddFile(repoName, "appsettings.json", appsettingsContent, $"chore: update appsettings.json");
 
-                var dotNetSDKVersion = "10.0.100-rc.2.25502.107";
+                var dotNetSDKVersion = "10.0.100";
 
                 var global = $$"""
                     {
                       "sdk": {
                         "version": "{{dotNetSDKVersion}}",
-                        "rollForward": "latestFeature",
-                        "allowPrerelease": false
+                        "rollForward": "latestFeature"
                       }
                     }
                     """;
@@ -205,7 +204,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     <Project>
                         <ItemGroup>
                             <PackageReference Include="KubernetesClient" Version="18.0.5" />
-                            <PackageReference Include="KubernetesCRDModelGen.SourceGenerator" Version="1.1.0">
+                            <PackageReference Include="KubernetesCRDModelGen.SourceGenerator" Version="1.1.1">
                                 <PrivateAssets>all</PrivateAssets>
                             </PackageReference>
                         </ItemGroup>
@@ -412,5 +411,6 @@ public static class Extensions
         resp.Desired.AddOrUpdate(key, newFile);
     }
 }
+
 
 
