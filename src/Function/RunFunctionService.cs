@@ -204,7 +204,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     <Project>
                         <ItemGroup>
                             <PackageReference Include="KubernetesClient" Version="18.0.5" />
-                            <PackageReference Include="KubernetesCRDModelGen.SourceGenerator" Version="1.1.1">
+                            <PackageReference Include="KubernetesCRDModelGen.SourceGenerator" Version="1.1.2">
                                 <PrivateAssets>all</PrivateAssets>
                             </PackageReference>
                         </ItemGroup>
@@ -411,6 +411,7 @@ public static class Extensions
         resp.Desired.AddOrUpdate(key, newFile);
     }
 }
+
 
 
 
