@@ -21,7 +21,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
     {
         WriteIndented = true,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
     public override Task<RunFunctionResponse> RunFunction(RunFunctionRequest request, ServerCallContext context)
