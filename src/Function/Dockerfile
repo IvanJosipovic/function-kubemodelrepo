@@ -47,6 +47,7 @@ USER $APP_UID
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine3.22@sha256:0fba99926e4f12405c78f37941312f00c1aadb178bd63616f5d96fc2af5a26a9 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG VERSION=0.0.1
 WORKDIR /src
 COPY ["Function.csproj", "."]
 RUN dotnet restore "./Function.csproj"
@@ -57,6 +58,7 @@ RUN dotnet build "./Function.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:Ve
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
+ARG VERSION=0.0.1
 RUN dotnet publish "./Function.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:Version=${VERSION}
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
