@@ -1,7 +1,9 @@
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:9.0-alpine3.22@sha256:be36809e32840cf9fcbf1a3366657c903e460d3c621d6593295a5e5d02268a0d AS base
+ARG BUILDPLATFORM=linux/amd64
+
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:10.0-alpine3.22@sha256:1be14b20e4ec3dad26aa4932ae16c2193cc990c5499239492e9b697f0cba4e04 AS base
 WORKDIR /app
-EXPOSE 9443
+EXPOSE 8080
+ENV ASPNETCORE_HTTP_PORTS=8080
 
 # renovate: datasource=repology depName=alpine_3_22/busybox versioning=loose
 ENV BUSYBOX_VERSION="1.37.0-r18"
@@ -44,28 +46,22 @@ RUN apk add --upgrade --no-cache \
 USER $APP_UID
 
 # This stage is used to build the service project
-ARG BUILDPLATFORM=linux/amd64
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine3.22@sha256:e0f7abfb9c18aa419198b2c4e05dc2f7fd864a6098f09bddb1ceb2b0bce67685 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine3.22@sha256:0fba99926e4f12405c78f37941312f00c1aadb178bd63616f5d96fc2af5a26a9 AS build
 ARG BUILD_CONFIGURATION=Release
-ARG VERSION=0.0.1
 WORKDIR /src
 COPY ["Function.csproj", "."]
 RUN dotnet restore "./Function.csproj"
 COPY . .
-RUN dotnet build "./Function.csproj" -c $BUILD_CONFIGURATION --use-current-runtime -o /app/build /p:Version=${VERSION}
+WORKDIR "/src/."
+RUN dotnet build "./Function.csproj" -c $BUILD_CONFIGURATION -o /app/build /p:Version=${VERSION}
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-ARG VERSION=0.0.1
-RUN dotnet publish "./Function.csproj" -c $BUILD_CONFIGURATION --use-current-runtime -o /app/publish /p:UseAppHost=false /p:Version=${VERSION}
+RUN dotnet publish "./Function.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false /p:Version=${VERSION}
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
-
-WORKDIR /
-COPY package.yaml .
-
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Function.dll"]
