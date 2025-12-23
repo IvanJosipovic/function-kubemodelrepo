@@ -68,7 +68,7 @@ jobs:
         reporter: dotnet-trx
 
     - name: Docker Buildx
-      run: docker buildx build --platform linux/amd64,linux/arm64 -t test.loc/function-test --build-arg VERSION=${{ (steps.semantic.outputs.new_release_published && steps.semantic.outputs.new_release_version) || '0.0.1' }}  src/Function
+      run: docker buildx build --platform linux/amd64,linux/arm64 -t test.loc/function-test --build-arg VERSION=${{ (steps.semantic.outputs.new_release_published && steps.semantic.outputs.new_release_version) || '0.0.1' }} src/Function
 
     - name: Load Docker Image
       run: docker buildx build --load --platform $(docker info --format '{{.Architecture}}') -t test.loc/function-test src/Function

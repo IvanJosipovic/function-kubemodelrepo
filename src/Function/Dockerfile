@@ -62,6 +62,8 @@ RUN dotnet publish "./Function.csproj" -c $BUILD_CONFIGURATION -o /app/publish /
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
+WORKDIR /
+COPY package.yaml .
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Function.dll"]
