@@ -51,8 +51,7 @@
       "automerge": false,
       "semanticCommitType": "fix",
       "matchFileNames": [
-        "src/**",
-        "global.json"
+        "src/**"
       ]
     },
     {
@@ -78,4 +77,5 @@
     }
   ]
 }
+
 
