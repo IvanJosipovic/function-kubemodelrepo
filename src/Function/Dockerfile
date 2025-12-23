@@ -2,8 +2,7 @@ ARG BUILDPLATFORM=linux/amd64
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:10.0-alpine3.22@sha256:1be14b20e4ec3dad26aa4932ae16c2193cc990c5499239492e9b697f0cba4e04 AS base
 WORKDIR /app
-EXPOSE 8080
-ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 9443
 
 # renovate: datasource=repology depName=alpine_3_22/busybox versioning=loose
 ENV BUSYBOX_VERSION="1.37.0-r18"
