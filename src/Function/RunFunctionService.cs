@@ -1,7 +1,6 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Unicode;
 using Apiextensions.Fn.Proto.V1;
 using Function.SDK.CSharp;
 using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
@@ -310,6 +309,25 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.AddFile(repoName, ".github/workflows/update.yaml", crdupdate, $"chore: update .github/workflows/update.yaml");
 
+                var workflowEnable = """
+                    name: Keepalive Workflow
+
+                    on:
+                      schedule:
+                        - cron: "0 0 * * *"
+                    jobs:
+                      keepalive-job:
+                        name: Keepalive Workflow
+                        runs-on: ubuntu-latest
+                        permissions:
+                          actions: write
+                        steps:
+                          - uses: actions/checkout@main
+                          - uses: ivanjosipovic/keepalive-workflow@v2
+                    """;
+
+                resp.AddFile(repoName, ".github/workflows/enable.yaml", workflowEnable, $"chore: update .github/workflows/enable.yaml");
+
                 resp.Requirements.Resources["secret"] = new ResourceSelector()
                 {
                     ApiVersion = V1Secret.KubeApiVersion,
@@ -411,7 +429,4 @@ public static class Extensions
         resp.Desired.AddOrUpdate(key, newFile);
     }
 }
-
-
-
 
