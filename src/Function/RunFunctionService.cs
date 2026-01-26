@@ -315,6 +315,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     on:
                       schedule:
                         - cron: "0 0 * * *"
+                      workflow_dispatch:
                     jobs:
                       keepalive-job:
                         name: Keepalive Workflow
@@ -429,4 +430,3 @@ public static class Extensions
         resp.Desired.AddOrUpdate(key, newFile);
     }
 }
-
