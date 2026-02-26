@@ -8,8 +8,6 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
   </PropertyGroup>
 
  <ItemGroup>
@@ -22,7 +20,7 @@
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.4.1" />
     <PackageReference Include="Shouldly" Version="4.3.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
-    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,3 +32,4 @@
   </ItemGroup>
 
 </Project>
+
