@@ -62,14 +62,6 @@
       "matchPackageNames": [
         "alpine_*"
       ]
-    },
-    {
-      "automerge": false,
-      "matchFileNames": [
-        "src/Function/RunFunctionService.cs"
-      ],
-      "semanticCommitType": "fix",
-      "separateMajorMinor": true
     }
   ],
   "customManagers": [
