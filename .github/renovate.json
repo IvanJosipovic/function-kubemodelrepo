@@ -13,6 +13,13 @@
   ],
   "packageRules": [
     {
+      "groupName": "nuget-packages",
+      "automerge": false,
+      "matchFileNames": [
+        "src/Function/RunFunctionService.cs"
+      ]
+    },
+    {
       "groupName": "function.sdk.csharp",
       "separateMajorMinor": true,
       "groupSlug": "function-sdk-csharp",
@@ -65,6 +72,16 @@
     }
   ],
   "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/^src\\/Function\\/RunFunctionService\\.cs$/"
+      ],
+      "matchStrings": [
+        "<PackageReference\\s+Include=\\\"(?<depName>[^\\\"]+)\\\"\\s+Version=\\\"(?<currentValue>[^\\\"]+)\\\"(?:\\s*/>|\\s*>)"
+      ],
+      "datasourceTemplate": "nuget"
+    },
     {
       "customType": "regex",
       "managerFilePatterns": [
