@@ -202,7 +202,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                 var deps = $"""
                     <Project>
                         <ItemGroup>
-                            <PackageReference Include="KubernetesClient" Version="18.0.5" />
+                            <PackageReference Include="KubernetesClient" Version="19.0.2" />
                             <PackageReference Include="KubernetesCRDModelGen.SourceGenerator" Version="1.1.2">
                                 <PrivateAssets>all</PrivateAssets>
                             </PackageReference>
