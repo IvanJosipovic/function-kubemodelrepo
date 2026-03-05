@@ -13,13 +13,6 @@
   ],
   "packageRules": [
     {
-      "groupName": "nuget-packages",
-      "automerge": false,
-      "matchFileNames": [
-        "src/Function/RunFunctionService.cs"
-      ]
-    },
-    {
       "groupName": "function.sdk.csharp",
       "separateMajorMinor": true,
       "groupSlug": "function-sdk-csharp",
@@ -69,6 +62,14 @@
       "matchPackageNames": [
         "alpine_*"
       ]
+    },
+    {
+      "groupName": "nuget-packages",
+      "automerge": false,
+      "matchFileNames": [
+        "src/Function/RunFunctionService.cs"
+      ],
+      "semanticCommitType": "fix"
     }
   ],
   "customManagers": [

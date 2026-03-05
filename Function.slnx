@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path=".github/renovate.json" />
     <File Path=".github/workflows/cicd.yaml" />
     <File Path="example/composition.yaml" />
     <File Path="example/functions.yaml" />
