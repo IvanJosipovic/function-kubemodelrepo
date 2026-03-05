@@ -7,6 +7,15 @@
   "extends": [
     "config:recommended"
   ],
+  "regexManagers": [
+    {
+      "fileMatch": ["^src/Function/RunFunctionService\\.cs$"],
+      "matchStrings": ["<PackageReference\\s+Include=\\\"(?<depName>[^\\\"]+)\\\"\\s+Version=\\\"(?<currentValue>[^\\\"]+)\\\"(?:\\s*/>|\\s*>)"],
+      "datasourceTemplate": "nuget",
+      "depNameTemplate": "{{{depName}}}",
+      "versioningTemplate": "semver"
+    }
+  ],
   "platformAutomerge": true,
   "ignorePaths": [
     "**/docs/**"
