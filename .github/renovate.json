@@ -69,7 +69,8 @@
       "matchFileNames": [
         "src/Function/RunFunctionService.cs"
       ],
-      "semanticCommitType": "fix"
+      "semanticCommitType": "fix",
+      "separateMajorMinor": true
     }
   ],
   "customManagers": [
