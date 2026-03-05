@@ -65,6 +65,7 @@
     },
     {
       "groupName": "nuget-packages",
+      "groupSlug": "nuget-packages",
       "automerge": false,
       "matchFileNames": [
         "src/Function/RunFunctionService.cs"
