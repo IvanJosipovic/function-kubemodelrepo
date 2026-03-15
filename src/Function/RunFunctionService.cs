@@ -44,7 +44,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
         }))
         {
             logger.LogInformation("Running Function");
-            resp.Normal("Running Function");
+            //resp.Normal("Running Function");
 
             foreach (var group in observedXR.Spec.Repos.GroupBy(x => x.Group))
             {
