@@ -203,7 +203,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     <Project>
                         <ItemGroup>
                             <PackageReference Include="KubernetesClient" Version="19.0.2" />
-                            <PackageReference Include="KubernetesCRDModelGen.SourceGenerator" Version="1.2.6">
+                            <PackageReference Include="KubernetesCRDModelGen.SourceGenerator" Version="1.2.7">
                                 <PrivateAssets>all</PrivateAssets>
                             </PackageReference>
                         </ItemGroup>
