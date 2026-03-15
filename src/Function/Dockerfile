@@ -4,31 +4,31 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:10.0-alpine@sha25
 WORKDIR /app
 EXPOSE 9443
 
-# renovate: datasource=repology depName=alpine_3_22/busybox versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/busybox versioning=loose
 ENV BUSYBOX_VERSION="1.37.0-r18"
 
-# renovate: datasource=repology depName=alpine_3_22/busybox-binsh versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/busybox-binsh versioning=loose
 ENV BUSYBOX_BINSH_VERSION="1.37.0-r18"
 
-# renovate: datasource=repology depName=alpine_3_22/ca-certificates-bundle versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/ca-certificates-bundle versioning=loose
 ENV CA_CERTIFICATES_BUNDLES_VERSION="20250619-r0"
 
-# renovate: datasource=repology depName=alpine_3_22/libcrypto3 versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/libcrypto3 versioning=loose
 ENV LIBCRYPTO3_VERSION="3.5.2-r0"
 
-# renovate: datasource=repology depName=alpine_3_22/libgcc versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/libgcc versioning=loose
 ENV LIBGCC_VERSION="14.2.0-r6"
 
-# renovate: datasource=repology depName=alpine_3_22/libssl3 versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/libssl3 versioning=loose
 ENV LIBSSL3_VERSION="3.5.2-r0"
 
-# renovate: datasource=repology depName=alpine_3_22/libstdc++ versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/libstdc++ versioning=loose
 ENV LIBSTDC_VERSION="14.2.0-r6"
 
-# renovate: datasource=repology depName=alpine_3_22/ssl_client versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/ssl_client versioning=loose
 ENV SSL_VERSION="1.37.0-r18"
 
-# renovate: datasource=repology depName=alpine_3_22/zlib versioning=loose
+# renovate: datasource=repology depName=alpine_3_23/zlib versioning=loose
 ENV ZLIB_VERSION="1.3.1-r2"
 
 RUN apk add --upgrade --no-cache \
