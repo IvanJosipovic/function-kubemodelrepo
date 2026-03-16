@@ -179,12 +179,9 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.Desired.AddOrUpdate("ruleset-" + group.Key, ruleset);
 
-                var appsettingsContent = JsonSerializer.Serialize(new
-                {
-                    Config = group.Select(x => x)
-                }, jsonSerializerOptions);
+                var appsettingsContent = JsonSerializer.Serialize(new { Config = group.Select(x => x) }, jsonSerializerOptions);
 
-                resp.AddFile(repoName, "appsettings.json", appsettingsContent, $"chore: update appsettings.json");
+                resp.AddFile(repoName, "appsettings.json", appsettingsContent, "chore: update appsettings.json");
 
                 var dotNetSDKVersion = "10.0.100";
 
@@ -214,7 +211,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     </Project>
                     """;
 
-                resp.AddFile(repoName, "Directory.Build.props", deps, $"fix: update dependencies");
+                resp.AddFile(repoName, "Directory.Build.props", deps, "fix: update dependencies");
 
                 var csProj = $"""
                     <Project Sdk="Microsoft.NET.Sdk">
@@ -238,7 +235,14 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             <PackageReadmeFile>README.md</PackageReadmeFile>
                             <NoWarn>$(NoWarn);CS1591;CS8618</NoWarn>
                             <WarningsAsErrors>$(WarningsAsErrors);CS8784;CS8785</WarningsAsErrors>
+                            <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+                            <CompilerGeneratedFilesOutputPath>Generated</CompilerGeneratedFilesOutputPath>
                         </PropertyGroup>
+
+                        <ItemGroup>
+                            <!-- Exclude the output of source generators from the compilation -->
+                            <Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+                        </ItemGroup>
 
                         <ItemGroup>
                             <None Include="README.md" Pack="true" PackagePath="\" />
@@ -247,7 +251,15 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     </Project>
                     """;
 
-                resp.AddFile(repoName, repoName + ".csproj", csProj, $"fix: update .NET settings");
+                resp.AddFile(repoName, repoName + ".csproj", csProj, "chore: update .NET settings");
+
+                var slnx = $"""
+                    <Solution>
+                      <Project Path="{repoName}.csproj" />
+                    </Solution>
+                    """;
+
+                resp.AddFile(repoName, repoName + ".slnx", slnx, "chore: update .slnx");
 
                 var readme = $$"""
                     ## {{repoName}}
@@ -256,7 +268,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     C# models for Kubernetes CRDs in group {{group.Key}}
                     """;
 
-                resp.AddFile(repoName, "README.md", readme, $"chore: update README.md");
+                resp.AddFile(repoName, "README.md", readme, "chore: update README.md");
 
                 var cicd = """
                     name: CICD
@@ -287,7 +299,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
                     """;
 
-                resp.AddFile(repoName, ".github/workflows/cicd.yaml", cicd, $"chore: update .github/workflows/cicd.yaml");
+                resp.AddFile(repoName, ".github/workflows/cicd.yaml", cicd, "chore: update .github/workflows/cicd.yaml");
 
                 var crdupdate = """
                     name: Update
@@ -307,7 +319,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                           GH_TOKEN: ${{secrets.GHPAT}}
                     """;
 
-                resp.AddFile(repoName, ".github/workflows/update.yaml", crdupdate, $"chore: update .github/workflows/update.yaml");
+                resp.AddFile(repoName, ".github/workflows/update.yaml", crdupdate, "chore: update .github/workflows/update.yaml");
 
                 var workflowEnable = """
                     name: Keepalive Workflow
@@ -327,7 +339,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                           - uses: ivanjosipovic/keepalive-workflow@v2
                     """;
 
-                resp.AddFile(repoName, ".github/workflows/enable.yaml", workflowEnable, $"chore: update .github/workflows/enable.yaml");
+                resp.AddFile(repoName, ".github/workflows/enable.yaml", workflowEnable, "chore: update .github/workflows/enable.yaml");
 
                 resp.Requirements.Resources["secret"] = new ResourceSelector()
                 {
