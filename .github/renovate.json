@@ -78,6 +78,17 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
+        "/^src\\/Function\\/RunFunctionService\\.cs$/"
+      ],
+      "matchStrings": [
+        "var\\s+dotNetSDKVersion\\s*=\\s*\\\"(?<currentValue>[^\\\"]+)\\\";"
+      ],
+      "depNameTemplate": "dotnet-sdk",
+      "datasourceTemplate": "dotnet-version"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
         "/Dockerfile$/"
       ],
       "matchStrings": [
