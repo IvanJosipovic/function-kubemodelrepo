@@ -26,10 +26,13 @@ ENV LIBSSL3_VERSION="3.5.2-r0"
 ENV LIBSTDC_VERSION="14.2.0-r6"
 
 # renovate: datasource=repology depName=alpine_3_23/ssl_client versioning=loose
-ENV SSL_VERSION="1.37.0-r18"
+ENV SSL_CLIENT_VERSION="1.37.0-r18"
 
 # renovate: datasource=repology depName=alpine_3_23/zlib versioning=loose
 ENV ZLIB_VERSION="1.3.1-r2"
+
+# renovate: datasource=repology depName=alpine_3_23/musl-utils versioning=loose
+ENV MUSL_UTILS_VERSION="1.2.5-r23"
 
 RUN apk add --upgrade --no-cache \
         busybox>$BUSYBOX_VERSION \
@@ -39,8 +42,9 @@ RUN apk add --upgrade --no-cache \
         libgcc>$LIBGCC_VERSION \
         libssl3>$LIBSSL3_VERSION \
         libstdc++>$LIBSTDC_VERSION \
-        ssl_client>$SSL_VERSION \
-        zlib>$ZLIB_VERSION
+        ssl_client>$SSL_CLIENT_VERSION \
+        zlib>$ZLIB_VERSION \
+        musl-utils>$MUSL_UTILS_VERSION
 
 USER $APP_UID
 
