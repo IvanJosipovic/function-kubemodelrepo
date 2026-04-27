@@ -88,7 +88,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                 new()
                                 {
                                     Owner = "IvanJosipovic",
-                                    Repository = "KubernetesCRDModelGen.Models.Template"
+                                    Repository = "KubernetesCRDModelGen.Models.Templates"
                                 }
                             ],
                             Topics =
