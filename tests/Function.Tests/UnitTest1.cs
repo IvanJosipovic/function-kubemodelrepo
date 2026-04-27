@@ -81,7 +81,7 @@ public class UnitTest1
                                 new()
                                 {
                                     Owner = "IvanJosipovic",
-                                    Repository = "KubernetesCRDModelGen.Models.Template"
+                                    Repository = "KubernetesCRDModelGen.Models.Templates"
                                 }
                             ],
                     Topics =
