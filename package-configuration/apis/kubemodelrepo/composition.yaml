@@ -8,6 +8,6 @@ spec:
     kind: KubeModelRepo
   mode: Pipeline
   pipeline:
-  - step: run-the-function
-    functionRef:
-      name: function-kubemodelrepo
+    - step: run-the-function
+      functionRef:
+        name: function-kubemodelrepo

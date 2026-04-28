@@ -106,7 +106,7 @@ jobs:
       run: |
         cp src/Function/xrd.yaml package-configuration/apis/kubemodelrepo/definition.yaml
 
-        version="$(semanticRelease.version)"
+        version=">=${{ steps.semantic-final.outputs.new_release_version }}"
         if [ -n "$version" ]; then
           sed -i "s/\"99.99.99-alpha.1\"/\"$version\"/g" package-configuration/crossplane.yaml
         fi
@@ -115,7 +115,7 @@ jobs:
 
         crossplane xpkg build --package-root="package-configuration" --examples-root="examples" -o image.tar
         img=$(docker load -i image.tar | sed -n 's/^Loaded image: //p; s/^Loaded image ID: //p')
-        docker tag "$img" "ghcr.io/${GITHUB_REPOSITORY,,}/configuration-kubemodelrepo:${(version}"
+        docker tag "$img" "ghcr.io/${GITHUB_REPOSITORY,,}/configuration-kubemodelrepo:${version}"
 
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${GITHUB_ACTOR} --password-stdin
         docker push "ghcr.io/${GITHUB_REPOSITORY,,}/configuration-kubemodelrepo:${version}"
