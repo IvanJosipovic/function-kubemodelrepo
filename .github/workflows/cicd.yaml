@@ -106,9 +106,9 @@ jobs:
       run: |
         cp src/Function/xrd.yaml package-configuration/apis/kubemodelrepo/definition.yaml
 
-        version=">=${{ steps.semantic-final.outputs.new_release_version }}"
+        version="${{ steps.semantic-final.outputs.new_release_version }}"
         if [ -n "$version" ]; then
-          sed -Ei 's/^([[:space:]]*version:[[:space:]]*")[^"]*(")/\1'"$version"'\2/' package-configuration/crossplane.yaml
+          sed -Ei 's/^([[:space:]]*version:[[:space:]]*")[^"]*(")/\1'">=$version"'\2/' package-configuration/crossplane.yaml
         fi
 
         cat package-configuration/crossplane.yaml
