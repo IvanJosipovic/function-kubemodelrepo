@@ -4,7 +4,7 @@ kind: CompositeResourceDefinition
 metadata:
   name: kubemodelrepos.svc.systems
 spec:
-  scope: Cluster
+  scope: Namespaced
   group: svc.systems
   names:
     categories:
@@ -23,8 +23,6 @@ spec:
                 type: object
                 properties:
                   secretName:
-                    type: string
-                  secretNamespace:
                     type: string
                 required:
                 - secretName

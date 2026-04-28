@@ -2,10 +2,10 @@ apiVersion: svc.systems/v1alpha1
 kind: KubeModelRepo
 metadata:
   name: main
+  namespace: default
 spec:
   credentials:
     secretName: kubemodelrepo
-    secretNamespace: default
   repos:
   - group: databricks.upbound.io
     oci:

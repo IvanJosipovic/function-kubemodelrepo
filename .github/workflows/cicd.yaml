@@ -37,7 +37,7 @@ jobs:
       uses: docker/setup-buildx-action@v4
 
     - name: Semantic Release Dry Run
-      uses: cycjimmy/semantic-release-action@v6
+      uses: cycjimmy/semantic-release-action@v6.0.0
       id: semantic
       with:
         dry_run: true
@@ -86,17 +86,42 @@ jobs:
         TRIVY_DISABLE_VEX_NOTICE: true
 
     - name: Semantic Release
-      if: steps.semantic.outputs.new_release_published == 'true'
-      uses: cycjimmy/semantic-release-action@v6
+      uses: cycjimmy/semantic-release-action@v6.0.0
+      id: semantic-final
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         extra_plugins: |
           conventional-changelog-conventionalcommits
 
-    - name: Docker Push
-      if: steps.semantic.outputs.new_release_published == 'true'
+    - name: Install Crossplane CLI
+      if: steps.semantic-final.outputs.new_release_published == 'true'
+      run: |
+        curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/main/install.sh" | sh
+        mv crossplane /usr/local/bin
+
+    - name: Build & Push Package
+      if: steps.semantic-final.outputs.new_release_published == 'true'
+      run: |
+        cp src/Function/xrd.yaml package-configuration/apis/kubemodelrepo/definition.yaml
+
+        version="$(semanticRelease.version)"
+        if [ -n "$version" ]; then
+          sed -i "s/\"99.99.99-alpha.1\"/\"$version\"/g" package-configuration/crossplane.yaml
+        fi
+
+        cat package-configuration/crossplane.yaml
+
+        crossplane xpkg build --package-root="package-configuration" --examples-root="examples" -o image.tar
+        img=$(docker load -i image.tar | sed -n 's/^Loaded image: //p; s/^Loaded image ID: //p')
+        docker tag "$img" "ghcr.io/${GITHUB_REPOSITORY,,}/configuration-kubemodelrepo:${(version}"
+
+        echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${GITHUB_ACTOR} --password-stdin
+        docker push "ghcr.io/${GITHUB_REPOSITORY,,}/configuration-kubemodelrepo:${version}"
+
+    - name: Push Function
+      if: steps.semantic-final.outputs.new_release_published == 'true'
       run: |
         echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${GITHUB_ACTOR} --password-stdin
 
-        docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/${GITHUB_REPOSITORY,,}/function-kubemodelrepo:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'alpha' && 'alpha' || github.ref_name == 'beta' && 'beta' }} -t ghcr.io/${GITHUB_REPOSITORY,,}/function-kubemodelrepo:${{ steps.semantic.outputs.new_release_version }} --build-arg VERSION=${{ steps.semantic.outputs.new_release_version }} src/Function
+        docker buildx build --push --platform linux/amd64,linux/arm64 -t ghcr.io/${GITHUB_REPOSITORY,,}/function-kubemodelrepo:${{ github.ref_name == 'main' && 'latest' || github.ref_name == 'alpha' && 'alpha' || github.ref_name == 'beta' && 'beta' }} -t ghcr.io/${GITHUB_REPOSITORY,,}/function-kubemodelrepo:${{ steps.semantic-final.outputs.new_release_version }} --build-arg VERSION=${{ steps.semantic-final.outputs.new_release_version }} src/Function
