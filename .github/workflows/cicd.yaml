@@ -108,7 +108,7 @@ jobs:
 
         version=">=${{ steps.semantic-final.outputs.new_release_version }}"
         if [ -n "$version" ]; then
-          sed -i "s/\"99.99.99-alpha.1\"/\"$version\"/g" package-configuration/crossplane.yaml
+          sed -Ei 's/^([[:space:]]*version:[[:space:]]*")[^"]*(")/\1'"$version"'\2/' package-configuration/crossplane.yaml
         fi
 
         cat package-configuration/crossplane.yaml
