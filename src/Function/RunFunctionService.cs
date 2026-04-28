@@ -6,8 +6,8 @@ using Function.SDK.CSharp;
 using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
 using Grpc.Core;
 using k8s.Models;
-using KubernetesCRDModelGen.Models.actions.github.upbound.io;
-using KubernetesCRDModelGen.Models.repo.github.upbound.io;
+using KubernetesCRDModelGen.Models.actions.github.m.upbound.io;
+using KubernetesCRDModelGen.Models.repo.github.m.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
 
 namespace Function;
@@ -346,7 +346,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                     ApiVersion = V1Secret.KubeApiVersion,
                     Kind = V1Secret.KubeKind,
                     MatchName = observedXR.Spec.Credentials.SecretName,
-                    Namespace = observedXR.Spec.Credentials.SecretNamespace
+                    Namespace = observedXR.Metadata.NamespaceProperty
                 };
 
                 var requiredSecret = request.GetRequiredResource<V1Secret>("secret");
@@ -382,7 +382,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                         {
                                             Name = observedXR.Spec.Credentials.SecretName,
                                             Key = data.Key,
-                                            Namespace = observedXR.Spec.Credentials.SecretNamespace
                                         },
                                         Repository = repoName,
                                     }

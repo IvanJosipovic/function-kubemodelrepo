@@ -1,5 +1,5 @@
 using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
-using KubernetesCRDModelGen.Models.repo.github.upbound.io;
+using KubernetesCRDModelGen.Models.repo.github.m.upbound.io;
 using Shouldly;
 
 namespace Function.Tests;
@@ -21,7 +21,6 @@ public class UnitTest1
                 Credentials = new()
                 {
                     SecretName = "test",
-                    SecretNamespace = "default"
                 },
                 Repos =
                 [
