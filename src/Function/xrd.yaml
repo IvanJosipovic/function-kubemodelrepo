@@ -26,7 +26,6 @@ spec:
                     type: string
                 required:
                 - secretName
-                - secretNamespace
               repos:
                 type: array
                 items:
