@@ -97,7 +97,8 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                 "kubernetes",
                                 "model",
                                 "dotnet"
-                            ]
+                            ],
+                            HomepageUrl = $"https://www.nuget.org/packages/{repoName}"
                         }
                     }
                 };
