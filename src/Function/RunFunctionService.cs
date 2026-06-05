@@ -414,7 +414,7 @@ public static class Extensions
             {
                 Annotations = new Dictionary<string, string>()
                 {
-                    { RunFunctionService.ExternalName, $"{repository}/{fileName}" }
+                    { RunFunctionService.ExternalName, $"{repository}/{fileName}:main" }
                 }
             },
             Spec = new()
