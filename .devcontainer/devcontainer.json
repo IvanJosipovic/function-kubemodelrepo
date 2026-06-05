@@ -20,7 +20,7 @@
     },
     "forwardPorts": [
     ],
-    "postCreateCommand": "dotnet restore && curl -sL \"https://raw.githubusercontent.com/crossplane/crossplane/main/install.sh\" | sh && sudo mv crossplane /usr/local/bin",
+    "postCreateCommand": "dotnet restore && curl -sfL \"https://cli.crossplane.io/install.sh\" | sh && sudo mv crossplane /usr/local/bin",
     "hostRequirements": {
         "memory": "8gb",
         "cpus": 4
