@@ -96,7 +96,6 @@ jobs:
           conventional-changelog-conventionalcommits
 
     - name: Install Crossplane CLI
-      if: steps.semantic-final.outputs.new_release_published == 'true'
       run: |
         curl -sfL "https://cli.crossplane.io/install.sh" | sh
         mv crossplane /usr/local/bin
