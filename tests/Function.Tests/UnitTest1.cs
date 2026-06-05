@@ -89,7 +89,8 @@ public class UnitTest1
                                 "kubernetes",
                                 "model",
                                 "dotnet"
-                            ]
+                            ],
+                    HomepageUrl = "https://www.nuget.org/packages/KubernetesCRDModelGen.Models.test.com"
                 }
             }
         };
