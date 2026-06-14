@@ -7,6 +7,7 @@ using Function.SDK.CSharp.SourceGenerator.Models.svc.systems;
 using Grpc.Core;
 using k8s.Models;
 using KubernetesCRDModelGen.Models.actions.github.m.upbound.io;
+using KubernetesCRDModelGen.Models.github.m.upbound.io;
 using KubernetesCRDModelGen.Models.repo.github.m.upbound.io;
 using static Apiextensions.Fn.Proto.V1.FunctionRunnerService;
 
@@ -174,6 +175,11 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                     ]
                                 }
                             ]
+                        },
+                        ProviderConfigRef = new()
+                        {
+                            Kind = V1beta1ClusterProviderConfig.KubeKind,
+                            Name = "default"
                         }
                     }
                 };
@@ -385,6 +391,11 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                             Key = data.Key,
                                         },
                                         Repository = repoName,
+                                    },
+                                    ProviderConfigRef = new()
+                                    {
+                                        Kind = V1beta1ClusterProviderConfig.KubeKind,
+                                        Name = "default"
                                     }
                                 }
                             };
@@ -435,6 +446,11 @@ public static class Extensions
                     OverwriteOnCreate = false,
                     Repository = repository,
                     CommitMessage = commitMessage
+                },
+                ProviderConfigRef = new()
+                {
+                    Kind = V1beta1ClusterProviderConfig.KubeKind,
+                    Name = "default"
                 }
             }
         };
