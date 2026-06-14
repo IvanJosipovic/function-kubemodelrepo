@@ -175,11 +175,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                     ]
                                 }
                             ]
-                        },
-                        ProviderConfigRef = new()
-                        {
-                            Kind = V1beta1ClusterProviderConfig.KubeKind,
-                            Name = "default"
                         }
                     }
                 };
@@ -391,11 +386,6 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                                             Key = data.Key,
                                         },
                                         Repository = repoName,
-                                    },
-                                    ProviderConfigRef = new()
-                                    {
-                                        Kind = V1beta1ClusterProviderConfig.KubeKind,
-                                        Name = "default"
                                     }
                                 }
                             };
@@ -446,11 +436,6 @@ public static class Extensions
                     OverwriteOnCreate = false,
                     Repository = repository,
                     CommitMessage = commitMessage
-                },
-                ProviderConfigRef = new()
-                {
-                    Kind = V1beta1ClusterProviderConfig.KubeKind,
-                    Name = "default"
                 }
             }
         };
