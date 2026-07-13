@@ -84,6 +84,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
                             Private = false,
                             SquashMergeCommitMessage = "COMMIT_MESSAGES",
                             SquashMergeCommitTitle = "PR_TITLE",
+                            Archived = true,
                             Template =
                             [
                                 new()
