@@ -42,7 +42,7 @@ jobs:
       with:
         dry_run: true
         extra_plugins: |
-          conventional-changelog-conventionalcommits
+          conventional-changelog-conventionalcommits@9
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -93,7 +93,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         extra_plugins: |
-          conventional-changelog-conventionalcommits
+          conventional-changelog-conventionalcommits@9
 
     - name: Install Crossplane CLI
       if: steps.semantic-final.outputs.new_release_published == 'true'
