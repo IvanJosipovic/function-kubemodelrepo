@@ -186,7 +186,7 @@ public class RunFunctionService(ILogger<RunFunctionService> logger) : FunctionRu
 
                 resp.AddFile(repoName, "appsettings.json", appsettingsContent, "chore: update appsettings.json");
 
-                var dotNetSDKVersion = "10.0.301";
+                var dotNetSDKVersion = "10.0.302";
 
                 var global = $$"""
                     {
