@@ -57,6 +57,7 @@ public class UnitTest1
                     V1alpha1RepositorySpecManagementPoliciesEnum.Observe,
                     V1alpha1RepositorySpecManagementPoliciesEnum.Create,
                     V1alpha1RepositorySpecManagementPoliciesEnum.Update,
+                    V1alpha1RepositorySpecManagementPoliciesEnum.Delete,
                     V1alpha1RepositorySpecManagementPoliciesEnum.LateInitialize,
                 ],
                 ForProvider = new()
