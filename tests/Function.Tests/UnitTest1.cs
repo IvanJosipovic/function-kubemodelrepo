@@ -75,6 +75,7 @@ public class UnitTest1
                     Private = false,
                     SquashMergeCommitMessage = "COMMIT_MESSAGES",
                     SquashMergeCommitTitle = "PR_TITLE",
+                    Archived = true,
                     Template =
                             [
                                 new()
